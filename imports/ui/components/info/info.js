@@ -1,4 +1,4 @@
-import { Links } from '/imports/api/links/links.js';
+import { Projects } from '/imports/api/projects.js';
 import { Meteor } from 'meteor/meteor';
 import './info.html';
 
