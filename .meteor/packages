@@ -28,3 +28,7 @@ accounts-password
 #accounts-ui
 ian:accounts-ui-bootstrap-3
 aldeed:autoform
+aldeed:collection2-core
+aldeed:tabular
+peppelg:bootstrap-3-modal
+insecure
