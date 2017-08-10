@@ -8,7 +8,8 @@ export default Projects = new Mongo.Collection('projects');
 Projects.schema = new SimpleSchema({
 
     projectCode: {
-        type: String
+        type: String,
+        unique: true
     },
 
     projectName: {

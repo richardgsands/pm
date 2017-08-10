@@ -6,6 +6,7 @@ import '../../ui/layouts/body/body.js';
 import '../../ui/pages/home/home.js';
 import '../../ui/pages/not-found/not-found.js';
 import '../../ui/pages/projects/projects.js';
+import '../../ui/pages/timesheet/timesheet';
 
 // Set up all routes in the app
 FlowRouter.route('/', {
@@ -25,5 +26,12 @@ FlowRouter.route('/projects', {
   name: 'App.projects',
   action() {
     BlazeLayout.render('App_body', { main: 'App_projects' });
+  }
+});
+
+FlowRouter.route('/timesheet/:userId', {
+  name: 'App.timesheet',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_timesheet' });
   }
 });

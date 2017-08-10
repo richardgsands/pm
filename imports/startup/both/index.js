@@ -2,3 +2,4 @@
 // e.g. useraccounts configuration file.
 
 import '/imports/tables/projects.js';
+import '/imports/tables/timeentrys.js';

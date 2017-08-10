@@ -10,6 +10,7 @@
     "datatables.net-bs": "^1.10.15",
     "jquery": "^1.11.3",
     "meteor-node-stubs": "~0.2.4",
+    "moment": "^2.18.1",
     "simpl-schema": "^0.3.2"
   }
 }
