@@ -1,4 +1,4 @@
-import TimeEntrys from '../api/timeentrys';
+import TimeEntrys from '../collections/timeentrys.js';
 import Tabular from 'meteor/aldeed:tabular';
 import moment from 'moment';
 

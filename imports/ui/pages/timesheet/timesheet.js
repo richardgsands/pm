@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import moment from 'moment';
 
-import TimeEntrys from '/imports/api/timeentrys.js';
-import '/imports/tables/projects.js';
+import TimeEntrys from '/imports/api/collections/timeentrys.js';
+import '/imports/api/tables/projects.js';
 import '/imports/ui/components/quickFormModal/quickFormModal.js';
 
 import './timesheet.html';

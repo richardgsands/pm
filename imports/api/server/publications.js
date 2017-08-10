@@ -1,8 +1,8 @@
 // All links-related publications
 
 import { Meteor } from 'meteor/meteor';
-import Projects from '../projects.js';
-import TimeEntrys from '../timeentrys.js';
+import Projects from '../collections/projects.js';
+import TimeEntrys from '../collections/timeentrys.js';
 
 Meteor.publish('projects.all', function () {
   return Projects.find();

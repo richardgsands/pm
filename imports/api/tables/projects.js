@@ -1,4 +1,4 @@
-import Projects from '../api/projects';
+import Projects from '../collections/projects';
 import Tabular from 'meteor/aldeed:tabular';
 
 new Tabular.Table({

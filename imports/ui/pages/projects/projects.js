@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-import '/imports/tables/projects.js';
+import '/imports/api/tables/projects.js';
 import '/imports/ui/components/quickFormModal/quickFormModal.js';
 
 import './projects.html';

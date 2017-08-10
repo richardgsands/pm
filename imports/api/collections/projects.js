@@ -17,9 +17,10 @@ Projects.schema = new SimpleSchema({
         type: String
     },
 
-    // priority: {
-    //     type
-    // }
+    priority: {
+        type: SimpleSchema.Integer,
+        allowedValues: [0, 1, 2, 3]
+    }
 
 });
 
