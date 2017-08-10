@@ -45,12 +45,7 @@
       </div>
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
-        {{ #if currentUser }}
-          {{> Template.dynamic template=main}}
-        {{ else }}
-          <h1 class="page-header">Not logged in</h1>
-          <p>Please log in.</p>
-        {{ /if }}
+        {{> Template.dynamic template=main}}
         
       </div>
     </div>
