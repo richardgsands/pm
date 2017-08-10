@@ -8,7 +8,6 @@ import '/imports/ui/components/quickFormModal/quickFormModal.js';
 import './timesheet.html';
 
 Template.App_timesheet.onCreated(function() {
-    console.log('Template.App_timesheet.onCreated');
     this.getUserId = () => FlowRouter.getParam('userId');
 
     this.subscribe('projects.all');
@@ -53,6 +52,7 @@ Template.App_timesheet.helpers({
     },
 
     forLoggedInUser() {
+        FlowRouter.watchPathChange();
         return FlowRouter.getParam('userId') === Meteor.userId();
     },
 

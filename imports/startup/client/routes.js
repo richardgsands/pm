@@ -8,6 +8,12 @@ import '../../ui/pages/not-found/not-found.js';
 import '../../ui/pages/timesheet/timesheet';
 import '../../ui/pages/projects/projects.js';
 import '../../ui/pages/project/project.js';
+import '../../ui/components/project/project_tor.js';
+import '../../ui/components/project/project_outcomes.js';
+import '../../ui/components/project/project_actions.js';
+import '../../ui/components/project/project_people.js';
+import '../../ui/components/project/project_money.js';
+import '../../ui/components/project/project_status.js';
 
 function checkLoggedIn (ctx, redirect) {  
   if (!Meteor.userId()) {
@@ -60,9 +66,7 @@ privateRoutes.route('/projects', {
 privateRoutes.route('/timesheet', {
   name: 'App.timesheet.loggedInUser',
   action() {
-    FlowRouter.withReplaceState(function() {
-      FlowRouter.go(`/timesheet/${Meteor.userId()}`)
-    });
+    FlowRouter.redirect(`/timesheet/${Meteor.userId()}`);
   }
 });
 
@@ -73,30 +77,62 @@ privateRoutes.route('/timesheet/:userId', {
   }
 });
 
-let projectRoutes = privateRoutes.group({
-  name: 'project'
-});
-
-projectRoutes.route('/project/new', {
+privateRoutes.route('/project/new', {
   name: 'Project.new',
   action() {
     BlazeLayout.render('App_body', { main: 'App_project' });
   }
 });
 
-
-projectRoutes.route('/project/:projectCode', {
+privateRoutes.route('/project/:projectCode', {
   name: 'Project',
   action() {
-    FlowRouter.withReplaceState(function() {
-      FlowRouter.go(`${FlowRouter.current().path}/tor`);
-    });
+    FlowRouter.redirect(`${FlowRouter.current().path}/tor`);
   }
 });
 
+let projectRoutes = privateRoutes.group({
+  name: 'project'
+});
+
 projectRoutes.route('/project/:projectCode/tor', {
-  name: 'Project',
+  name: 'TOR',
   action() {
-    BlazeLayout.render('App_body', { main: 'App_project' });
+    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_tor' });
+  }
+});
+
+projectRoutes.route('/project/:projectCode/outcomes', {
+  name: 'Outcomes',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_outcomes' });
+  }
+});
+
+projectRoutes.route('/project/:projectCode/actions', {
+  name: 'Actions',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_actions' });
+  }
+});
+
+projectRoutes.route('/project/:projectCode/people', {
+  name: 'People',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_people' });
+  }
+});
+
+projectRoutes.route('/project/:projectCode/money', {
+  name: 'Money',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_money' });
+  }
+});
+
+projectRoutes.route('/project/:projectCode/status', {
+  name: 'Status',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_status' });
   }
 });

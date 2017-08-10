@@ -1,4 +1,17 @@
 <template name="App_project">
     <h1 class="page-header">{{#if project}}{{project.projectCode}}{{else}}New project{{/if}}</h1>
 
+    <div class="btn-group" role="group" aria-label="...">
+        {{#each groupRoutes}}
+            <a href="{{pathFor path projectCode=($or project.projectCode 'new')}}">
+                <button type="button" class="btn btn-default" {{renderIf ($and ($neq name 'TOR') ($not project) ) 'disabled'}}>{{name}}</button>
+            </a>
+        {{/each}}
+        <!-- <button type="button" class="btn btn-default">TOR</button>
+        <button type="button" class="btn btn-default" {{renderUnless project 'disabled'}}>Actions</button>
+        <button type="button" class="btn btn-default" {{renderUnless project 'disabled'}}>People</button> -->
+    </div>
+
+    {{> Template.dynamic template=sub}}
+
 </template>
