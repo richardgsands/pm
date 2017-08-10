@@ -5,8 +5,9 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import '../../ui/layouts/body/body.js';
 import '../../ui/pages/home/home.js';
 import '../../ui/pages/not-found/not-found.js';
-import '../../ui/pages/projects/projects.js';
 import '../../ui/pages/timesheet/timesheet';
+import '../../ui/pages/projects/projects.js';
+import '../../ui/pages/project/project.js';
 
 function checkLoggedIn (ctx, redirect) {  
   if (!Meteor.userId()) {
@@ -59,7 +60,9 @@ privateRoutes.route('/projects', {
 privateRoutes.route('/timesheet', {
   name: 'App.timesheet.loggedInUser',
   action() {
-    FlowRouter.go(`/timesheet/${Meteor.userId()}`)
+    FlowRouter.withReplaceState(function() {
+      FlowRouter.go(`/timesheet/${Meteor.userId()}`)
+    });
   }
 });
 
@@ -74,9 +77,26 @@ let projectRoutes = privateRoutes.group({
   name: 'project'
 });
 
-projectRoutes.route('/project/:projectCode/tor', {
-  name: 'Project.tor',
+projectRoutes.route('/project/new', {
+  name: 'Project.new',
   action() {
     BlazeLayout.render('App_body', { main: 'App_project' });
   }
-})
+});
+
+
+projectRoutes.route('/project/:projectCode', {
+  name: 'Project',
+  action() {
+    FlowRouter.withReplaceState(function() {
+      FlowRouter.go(`${FlowRouter.current().path}/tor`);
+    });
+  }
+});
+
+projectRoutes.route('/project/:projectCode/tor', {
+  name: 'Project',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_project' });
+  }
+});

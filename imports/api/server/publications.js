@@ -8,6 +8,14 @@ Meteor.publish('projects.all', function () {
   return Projects.find();
 });
 
+Meteor.publish('projects.id', function (projectId) {
+  return Projects.find(projectId);
+});
+
+Meteor.publish('projects.projectCode', function (projectCode) {
+  return Projects.find({ projectCode });
+});
+
 Meteor.publish('timeentrys.user', function (userId) {
   return TimeEntrys.find({ userId });
 });
