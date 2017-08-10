@@ -2,7 +2,8 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import Projects from './projects';
-import AuditHooks from '/imports/config/audit-hooks';
+import AuditHooks from '../../config/audit-hooks';
+import ApiCommon from '../api-common';
 
 export default TimeEntrys = new Mongo.Collection('timeentrys');
 
@@ -27,13 +28,7 @@ TimeEntrys.schema = new SimpleSchema({
 
     date: {
         type: Date,
-        autoform: {
-            type: "bootstrap-datepicker",
-            datePickerOptions: {
-                autoclose: true,
-                format: "dd/mm/yyyy"
-            }
-        }        
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef()    
     },
 
     hours: {
