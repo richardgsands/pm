@@ -8,6 +8,7 @@ import '/imports/ui/components/quickFormModal/quickFormModal.js';
 import './timesheet.html';
 
 Template.App_timesheet.onCreated(function() {
+    console.log('Template.App_timesheet.onCreated');
     this.getUserId = () => FlowRouter.getParam('userId');
 
     this.subscribe('projects.all');
@@ -19,6 +20,30 @@ Template.App_timesheet.onCreated(function() {
         lastProjectId: new ReactiveVar(null),
         lastDate: new ReactiveVar( moment().startOf('day').format("DD/MM/YYYY") )
     }
+
+    this.registerEvents = () => {
+        let template = this;
+
+        // handle project select
+        $('#insertTimeEntryContainer select[name=projectId]').on('select2:select', function(event) {
+            console.log('user selected project');
+            template.state.lastProjectId.set( $(this).val() );
+
+            $(this).closest('.js-autoform-input-container').next().find('input').focus().select();
+        });
+
+        // handle date select
+        $('#insertTimeEntryContainer input[name=date]').datepicker().on('changeDate', function(event) {
+            console.log('user selected date');
+            template.state.lastDate.set( $(this).val() );
+
+            $(this).closest('.js-autoform-input-container').next().find('input').focus().select();     
+        });
+    }
+});
+
+Template.App_timesheet.onRendered(function() {
+    this.registerEvents();
 });
 
 Template.App_timesheet.helpers({
@@ -32,7 +57,7 @@ Template.App_timesheet.helpers({
     },
 
     defaultValues() {
-        debugger;
+        // debugger;
         let hoursForDate = 0;
         TimeEntrys.find({ userId: Template.instance().getUserId() }).forEach((te) => {
             hoursForDate += te.hours;
@@ -49,14 +74,39 @@ Template.App_timesheet.helpers({
 
 Template.App_timesheet.events({
 
-    'change #insertTimeEntryContainer input[name=date]'(event, template) {
-        console.log('changed date');
-        template.state.lastDate.set( event.currentTarget.value );
-    },
+    // edit row
+    'click tbody > tr': function (event) {
+        var dataTable = $(event.target).closest('table').DataTable();
+        var rowData = dataTable.row(event.currentTarget).data();
+        if (!rowData) return; // Won't be data if a placeholder row is clicked
+        // Your click handler logic here
+        console.log(rowData);
 
-    'change #insertTimeEntryContainer select[name=projectId]'(event, template) {
-        console.log('changed project id');
-        template.state.lastProjectId.set( event.currentTarget.value );
+        Modal.show('quickFormModal', {
+            title: "Edit time entry",
+            type: 'update',
+            collection: TimeEntrys,
+            id: 'editTimeEntryFormModal',
+            doc: rowData,
+            omitFields: ['userId']
+        });
+
     }
 
 });
+
+
+// set focus on insert form on success
+AutoForm.addHooks('insertTimeEntry', {
+    onSuccess: () => {
+        //this.event.preventDefault();
+        $('.js-autoform-input-container').first().find('select').select2('open');
+    }
+}, true);
+
+// close edit modal on success
+AutoForm.addHooks('editTimeEntryFormModal', {
+    onSuccess: () => {
+        Modal.hide();
+    }
+}, true);

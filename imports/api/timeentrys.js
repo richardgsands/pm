@@ -2,6 +2,7 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import Projects from './projects';
+import AuditHooks from '/imports/config/audit-hooks';
 
 export default TimeEntrys = new Mongo.Collection('timeentrys');
 
@@ -15,6 +16,7 @@ TimeEntrys.schema = new SimpleSchema({
         type: String,
         autoform: {
             label: "Project Code",
+            type: 'select2',
             options: function() {
                 return Projects.find({}).map(function(project) {
                     return { label: project.projectCode, value: project._id };
@@ -46,6 +48,7 @@ TimeEntrys.schema = new SimpleSchema({
 });
 
 TimeEntrys.attachSchema(TimeEntrys.schema);
+AuditHooks(TimeEntrys);
 
 TimeEntrys.helpers({
 

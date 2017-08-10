@@ -4,16 +4,16 @@
     {{#if forLoggedInUser}}
         <div id="insertTimeEntryContainer">
         {{#autoForm collection="TimeEntrys" id="insertTimeEntry" type="insert" doc=defaultValues}}
-            {{> afQuickField name='userId' type=hidden}}
+            {{> afQuickField name='userId' type='hidden'}}
             <div class="panel panel-default">
                 <div class="panel-heading">Add a timesheet entry</div>
                 <div class="panel-body">
 
                     <div class="row">
-                        <div class="col-md-2">{{> afQuickField name='projectId'}}</div>
-                        <div class="col-md-2">{{> afQuickField name='date'}}</div>
-                        <div class="col-md-2">{{> afQuickField name='hours'}}</div>
-                        <div class="col-md-6">{{> afQuickField name='description'}}</div>
+                        <div class="col-md-2 js-autoform-input-container">{{> afQuickField name='projectId'}}</div>
+                        <div class="col-md-2 js-autoform-input-container">{{> afQuickField name='date'}}</div>
+                        <div class="col-md-2 js-autoform-input-container">{{> afQuickField name='hours'}}</div>
+                        <div class="col-md-6 js-autoform-input-container">{{> afQuickField name='description'}}</div>
                     </div>                
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary">Insert</button>

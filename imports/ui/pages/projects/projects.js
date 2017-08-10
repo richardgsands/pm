@@ -21,7 +21,7 @@ Template.App_projects.events({
             title: "Add project",
             type: 'insert',
             collection: Projects,
-            id: 'insertProjectForm'
+            id: 'insertProjectFormModal'
         });
 
     }

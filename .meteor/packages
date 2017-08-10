@@ -36,3 +36,6 @@ aldeed:schema-index
 dburles:collection-helpers
 aldeed:autoform-bs-datepicker
 rajit:bootstrap3-datepicker
+matb33:collection-hooks
+aldeed:autoform-select2
+arillo:flow-router-helpers
