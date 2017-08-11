@@ -4,7 +4,7 @@
     <div class="btn-group" role="group" aria-label="...">
         {{#each groupRoutes}}
             <a href="{{pathFor path projectCode=($or project.projectCode 'new')}}">
-                <button type="button" class="btn btn-default" {{renderIf ($and ($neq name 'TOR') ($not project) ) 'disabled'}}>{{name}}</button>
+                <button type="button" class="btn btn-default margin-bottom" {{renderIf ($and ($neq name 'TOR') ($not project) ) 'disabled'}}>{{name}}</button>
             </a>
         {{/each}}
         <!-- <button type="button" class="btn btn-default">TOR</button>
@@ -12,6 +12,6 @@
         <button type="button" class="btn btn-default" {{renderUnless project 'disabled'}}>People</button> -->
     </div>
 
-    {{> Template.dynamic template=sub}}
+    {{> Template.dynamic template=sub data=project}}
 
 </template>
