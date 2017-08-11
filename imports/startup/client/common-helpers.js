@@ -1,17 +1,16 @@
 Template.registerHelper('renderIf', (cond, str) => {
-    return (cond) ? str : null
+    return (cond) ? str : null;
 });
 
 Template.registerHelper('renderUnless', (cond, str) => {
-    return (!cond) ? str : null
+    return (!cond) ? str : null;
 });
 
-// flow router
+// extensions to raix handlebars helpers
+Template.registerHelper('$concat', (a, b) => {
+    return a + b;
+});
 
-Template.registerHelper('groupRoutes', function (groupName) {  
-  FlowRouter.watchPathChange();
-  groupName = groupName || FlowRouter.current().route.group && FlowRouter.current().route.group.name;
-  return _.filter(FlowRouter._routes, function (route) {
-    return route.group && route.group.name === groupName;
-  });
-})
+Template.registerHelper('isActive', (a, b) => {
+  return (a === b) ? " active" : null;
+});

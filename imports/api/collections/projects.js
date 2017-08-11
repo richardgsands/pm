@@ -4,6 +4,8 @@ import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import AuditHooks from '../../config/audit-hooks';
 
+import TimeEntrys from './timeentrys';
+
 export default Projects = new Mongo.Collection('projects');
 
 Projects.schema = new SimpleSchema({
@@ -26,3 +28,11 @@ Projects.schema = new SimpleSchema({
 
 Projects.attachSchema(Projects.schema);
 AuditHooks(Projects);
+
+Projects.helpers({
+
+    timeEntrys() {
+        return TimeEntrys.find({ projectId: this._id });
+    }
+
+});

@@ -78,61 +78,15 @@ privateRoutes.route('/timesheet/:userId', {
 });
 
 privateRoutes.route('/project/new', {
-  name: 'Project.new',
+  name: 'App.project.new',
   action() {
     BlazeLayout.render('App_body', { main: 'App_project' });
   }
 });
 
 privateRoutes.route('/project/:projectCode', {
-  name: 'Project',
+  name: 'App.project.projectCode',
   action() {
-    FlowRouter.redirect(`${FlowRouter.current().path}/tor`);
-  }
-});
-
-let projectRoutes = privateRoutes.group({
-  name: 'project'
-});
-
-projectRoutes.route('/project/:projectCode/tor', {
-  name: 'TOR',
-  action() {
-    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_tor' });
-  }
-});
-
-projectRoutes.route('/project/:projectCode/outcomes', {
-  name: 'Outcomes',
-  action() {
-    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_outcomes' });
-  }
-});
-
-projectRoutes.route('/project/:projectCode/actions', {
-  name: 'Actions',
-  action() {
-    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_actions' });
-  }
-});
-
-projectRoutes.route('/project/:projectCode/people', {
-  name: 'People',
-  action() {
-    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_people' });
-  }
-});
-
-projectRoutes.route('/project/:projectCode/money', {
-  name: 'Money',
-  action() {
-    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_money' });
-  }
-});
-
-projectRoutes.route('/project/:projectCode/status', {
-  name: 'Status',
-  action() {
-    BlazeLayout.render('App_body', { main: 'App_project', sub: 'project_status' });
+    BlazeLayout.render('App_body', { main: 'App_project' });
   }
 });

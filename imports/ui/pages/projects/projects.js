@@ -17,12 +17,19 @@ Template.App_projects.events({
 
     'click .js-project-add'() {
 
-        Modal.show('quickFormModal', {
-            title: "Add project",
-            type: 'insert',
-            collection: Projects,
-            id: 'insertProjectFormModal'
-        });
+        FlowRouter.go(FlowRouter.path('App.project.new'));
+
+    },
+
+    // open project
+    'click tbody > tr': function (event) {
+        var dataTable = $(event.target).closest('table').DataTable();
+        var rowData = dataTable.row(event.currentTarget).data();
+        if (!rowData) return; // Won't be data if a placeholder row is clicked
+        // Your click handler logic here
+        console.log(rowData);
+
+        FlowRouter.go('App.project.projectCode', {projectCode: rowData.projectCode});
 
     }
 

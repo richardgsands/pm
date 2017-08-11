@@ -40,3 +40,5 @@ matb33:collection-hooks
 aldeed:autoform-select2
 arillo:flow-router-helpers
 raix:handlebar-helpers
+reywood:publish-composite
+sacha:spin

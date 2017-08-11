@@ -1,9 +1,9 @@
 <template name="project_tor">
 
-    {{#if project}}
-        {{>quickForm collection="Projects" id="insertProject" type="insert" doc=defaultValues template="bootstrap3-horizontal" label-class="col-sm-2" input-col-class="col-sm-10"}}
+    {{#if this}}
+        {{>quickForm collection="Projects" id="updateProject" type="update" doc=this       template="bootstrap3-horizontal" label-class="col-sm-2" input-col-class="col-sm-10"}}
     {{else}}
-        {{>quickForm collection="Projects" id="updateProject" type="update" doc=project       template="bootstrap3-horizontal" label-class="col-sm-2" input-col-class="col-sm-10"}}
+        {{>quickForm collection="Projects" id="insertProject" type="insert" doc=defaultValues template="bootstrap3-horizontal" label-class="col-sm-2" input-col-class="col-sm-10"}}
     {{/if}}
 
 </template>
