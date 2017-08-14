@@ -6,6 +6,10 @@ import { publishComposite } from 'meteor/reywood:publish-composite';
 import Projects from '../collections/projects.js';
 import TimeEntrys from '../collections/timeentrys.js';
 
+Meteor.publish('users.all', function() {
+  return Meteor.users.find();
+});
+
 Meteor.publish('projects.all', function () {
   return Projects.find();
 });

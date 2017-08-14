@@ -1,3 +1,19 @@
+import moment from 'moment';
+import '/imports/api/collections/users.js';
+
+Template.moment = moment;
+
+Template.registerHelper('displayName', (userId) => {
+    let user = Meteor.users.findOne(userId);
+    return (user) ? user.displayName() : `No user found: ${userId}`;
+});
+
+Template.registerHelper('displayMonth', function (date, format) {
+    const m = Template.moment(date, format);
+    return m.format('MMM-YY');
+})
+
+// general stuff
 Template.registerHelper('renderIf', (cond, str) => {
     return (cond) ? str : null;
 });

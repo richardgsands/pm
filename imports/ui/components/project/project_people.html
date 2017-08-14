@@ -8,14 +8,14 @@
             <tr>
                 <td>Person</td>
                 {{#each byMonth}}
-                <td>{{month_YYYYMM}}</td>
+                <td>{{displayMonth month_YYYYMM 'YYYYMM'}}</td>
                 {{/each}}
             </tr>
         </thead>
         <tbody>
             {{#each byUserAndMonth}}
             <tr>
-                <td>{{userId}}</td>
+                <td>{{ displayName userId }}</td>
                 {{#each months}}
                 <td>{{hours}}</td>
                 {{/each}}
