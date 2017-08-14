@@ -15,20 +15,12 @@ TimeEntrys.schema = new SimpleSchema({
 
     projectId: {
         type: String,
-        autoform: {
-            label: "Project Code",
-            type: 'select2',
-            options: function() {
-                return Projects.find({}).map(function(project) {
-                    return { label: project.projectCode, value: project._id };
-                });
-            }
-        }
+        autoform: ApiCommon.AutoformProjectPickerDef()
     },
 
     date: {
         type: Date,
-        autoform: ApiCommon.AutoformBootstrapDatepickerDef()    
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef()
     },
 
     hours: {

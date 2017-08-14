@@ -3,6 +3,8 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import AuditHooks from '../audit-hooks';
+import ApiCommon from '../api-common';
+
 import moment from 'moment';
 
 import TimeEntrys from './timeentrys';
@@ -23,6 +25,11 @@ Projects.schema = new SimpleSchema({
     priority: {
         type: SimpleSchema.Integer,
         allowedValues: [0, 1, 2, 3]
+    },
+
+    startDate: {
+        type: Date,
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef()
     }
 
 });
