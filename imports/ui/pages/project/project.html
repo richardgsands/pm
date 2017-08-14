@@ -2,7 +2,14 @@
 
     {{#if Template.subscriptionsReady}}
 
-        <h1 class="page-header">{{#if project}}{{project.projectCode}}{{else}}New project{{/if}}</h1>
+        {{#with project}}
+            <div class="page-header">
+                <h1>{{projectCode}}</h1>
+                <h2>{{projectName}}</h2>
+            </div>
+        {{else}}
+            <h1 class="page-header">New project</h1>
+        {{/with}}
 
         <div class="btn-group" role="group" aria-label="...">
 
