@@ -1,3 +1,2 @@
-import SimpleSchema from 'simpl-schema';
-
-SimpleSchema.extendOptions(['autoform']);
+import './simple-schema.js';
+import './accounts-ui';

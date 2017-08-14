@@ -1,9 +1,28 @@
 <template name="project_people">
     
-    <p>Project ID: {{_id}}</p>
+    <h2>Total hours spent on project</h2>
 
-    {{#each timeEntrys}}
-        <p>Hours: {{hours}}</p>
-    {{/each}}
+    {{#with hoursSummaryActual}}
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+            <tr>
+                <td>Person</td>
+                {{#each byMonth}}
+                <td>{{month_YYYYMM}}</td>
+                {{/each}}
+            </tr>
+        </thead>
+        <tbody>
+            {{#each byUserAndMonth}}
+            <tr>
+                <td>{{userId}}</td>
+                {{#each months}}
+                <td>{{hours}}</td>
+                {{/each}}
+            </tr>
+            {{/each}}
+        </tbody>
 
+    </table>
+    {{/with}}
 </template>

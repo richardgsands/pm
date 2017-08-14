@@ -1,9 +1,9 @@
 
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
-import Projects from './projects';
-import AuditHooks from '../../config/audit-hooks';
+import AuditHooks from '../audit-hooks';
 import ApiCommon from '../api-common';
+import Projects from './projects';
 
 export default TimeEntrys = new Mongo.Collection('timeentrys');
 

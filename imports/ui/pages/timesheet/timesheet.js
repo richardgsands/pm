@@ -10,6 +10,7 @@ import './timesheet.html';
 Template.App_timesheet.onCreated(function() {
     this.getUserId = () => FlowRouter.getParam('userId');
 
+    // subscriptions needed for insert form
     this.subscribe('projects.all');
     this.autorun(() => {
         this.subscribe('timeentrys.user', this.getUserId());
@@ -68,6 +69,10 @@ Template.App_timesheet.helpers({
             date: Template.instance().state.lastDate.get(),
             hours: Math.max(7.5-hoursForDate, 0)
         }
+    },
+
+    tableSelector() {
+        return { userId: Template.instance().getUserId() };
     }
 
 });
@@ -100,7 +105,7 @@ Template.App_timesheet.events({
 AutoForm.addHooks('insertTimeEntry', {
     onSuccess: () => {
         //this.event.preventDefault();
-        $('.js-autoform-input-container').first().find('select').select2('open');
+        // $('.js-autoform-input-container').first().find('select').select2('open');
     }
 }, true);
 
