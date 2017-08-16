@@ -20,6 +20,17 @@ export default ApiCommon = {
                 });
             }
         };
+    },
+    
+    AutoformUserPickerDef() {
+        return {
+            type: 'select2',
+            options: function() {
+                return Meteor.users.find({}).map(function(user) {
+                    return { label: `${user.displayName()}`, value: user._id };
+                });
+            }
+        };
     }
 
 } 
