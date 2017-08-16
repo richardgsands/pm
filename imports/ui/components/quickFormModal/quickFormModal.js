@@ -1,5 +1,16 @@
 import './quickFormModal.html';
 
 Template.quickFormModal.onCreated(function() {
-    debugger;
+
 });
+
+Template.quickFormModal.helpers({
+
+    // delete button
+    onSuccess: function () {
+        return function (result) { 
+            Modal.hide('quickFormModal');
+        };
+    }
+
+})

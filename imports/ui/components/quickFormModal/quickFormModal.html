@@ -13,6 +13,7 @@
                 </div>
 
                 <div class="modal-footer">
+                    {{#if this.doc._id}}{{> quickRemoveButton collection=this.collection _id=this.doc._id onSuccess=onSuccess class="btn btn-danger"}}{{/if}}
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
 
