@@ -27,6 +27,19 @@ Accounts.ui.config({
                 return true;
             }
         }            
+    }, {
+        fieldName: 'initials',
+        fieldLabel: 'Initials',
+        inputType: 'text',
+        visible: true,
+        validate: function(value, errorFunction) {
+            if (!value) {
+                errorFunction("Please complete all fields");
+                return false;
+            } else {
+                return true;
+            }
+        }            
     }]
 });
 
