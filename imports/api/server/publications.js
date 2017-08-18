@@ -18,11 +18,11 @@ Meteor.publish('timeentrys.user', function (userId) {
   return TimeEntrys.find({ userId });
 });
 
-publishComposite('project.projectCode.joins', function(projectCode) {
+publishComposite('project.code.joins', function(code) {
   return {
     find() {
-      // find project by projectCode
-      return Projects.find({ projectCode });
+      // find project by code
+      return Projects.find({ code });
     },
     children: [
       {

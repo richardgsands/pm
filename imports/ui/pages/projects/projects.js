@@ -29,7 +29,7 @@ Template.App_projects.events({
         // Your click handler logic here
         console.log(rowData);
 
-        FlowRouter.go('App.project.projectCode', {projectCode: rowData.projectCode});
+        FlowRouter.go('App.project.code', {code: rowData.code});
 
     }
 

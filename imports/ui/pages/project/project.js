@@ -5,16 +5,16 @@ Template.App_project.onCreated(function() {
 
     // subscribe
 
-    this.getProjectCode = () => FlowRouter.getParam('projectCode');
+    this.getcode = () => FlowRouter.getParam('code');
     this.autorun(() => {
         console.log('autorun')
-        let projectCode = this.getProjectCode();
-        if (projectCode) {
-            const s = this.subscribe('project.projectCode.joins', projectCode);
+        let code = this.getcode();
+        if (code) {
+            const s = this.subscribe('project.code.joins', code);
             if (s.ready()) {
                 console.log('> subs ready')
                 this.data = this.data || {};
-                this.data.project = Projects.find({ projectCode: Template.instance().getProjectCode() });
+                this.data.project = Projects.find({ code: Template.instance().getcode() });
             }
         }
     });
@@ -34,7 +34,7 @@ Template.App_project.onCreated(function() {
 Template.App_project.helpers({
 
     project() {
-        return Projects.findOne({ projectCode: Template.instance().getProjectCode() })
+        return Projects.findOne({ code: Template.instance().getcode() })
     },
 
     navStates() {

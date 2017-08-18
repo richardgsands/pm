@@ -13,12 +13,12 @@ export default Projects = new Mongo.Collection('projects');
 
 Projects.schema = new SimpleSchema({
 
-    projectCode: {
+    code: {
         type: String,
         unique: true
     },
 
-    projectName: {
+    name: {
         type: String
     },
 

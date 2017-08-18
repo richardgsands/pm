@@ -16,7 +16,7 @@ export default ApiCommon = {
             type: 'select2',
             options: function() {
                 return Projects.find({}).map(function(project) {
-                    return { label: `${project.projectCode} (${project.projectName})`, value: project._id };
+                    return { label: `${project.code} (${project.name})`, value: project._id };
                 });
             }
         };

@@ -4,8 +4,8 @@
 
         {{#with project}}
             <div class="page-header">
-                <h1>{{projectCode}}</h1>
-                <h2>{{projectName}}</h2>
+                <h1>{{code}}</h1>
+                <h2>{{name}}</h2>
             </div>
         {{else}}
             <h1 class="page-header">New project</h1>
@@ -14,7 +14,7 @@
         <div class="btn-group" role="group" aria-label="...">
 
             {{#each navStates}}
-                <a href="{{pathFor currentRouteName projectCode=($or project.projectCode 'new') query=($concat 'section=' query)}}">
+                <a href="{{pathFor currentRouteName code=($or project.code 'new') query=($concat 'section=' query)}}">
                     <button type="button" class="btn btn-default margin-bottom" {{renderIf ($and ($neq query 'tor') ($not project) ) 'disabled'}}>{{label}}</button>
                 </a>
             {{/each}}

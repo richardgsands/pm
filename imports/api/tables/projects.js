@@ -5,7 +5,7 @@ new Tabular.Table({
   name: "Projects",
   collection: Projects,
   columns: [
-    {data: "projectCode", title: "Project Code"},
-    {data: "projectName", title: "Project Name"}
+    {data: "code", title: "Project Code"},
+    {data: "name", title: "Project Name"}
   ]
 });

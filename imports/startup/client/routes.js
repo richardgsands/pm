@@ -84,8 +84,8 @@ privateRoutes.route('/project/new', {
   }
 });
 
-privateRoutes.route('/project/:projectCode', {
-  name: 'App.project.projectCode',
+privateRoutes.route('/project/:code', {
+  name: 'App.project.code',
   action() {
     BlazeLayout.render('App_body', { main: 'App_project' });
   }

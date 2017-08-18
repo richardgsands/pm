@@ -6,7 +6,7 @@ new Tabular.Table({
   name: "TimeEntrys",
   collection: TimeEntrys,
   columns: [
-    {data: "getProject().projectCode", title: "Project Code"},
+    {data: "getProject().code", title: "Project Code"},
     {
       data: "date",
       title: "Date",
