@@ -24,12 +24,14 @@ Projects.schema = new SimpleSchema({
 
     priority: {
         type: SimpleSchema.Integer,
-        allowedValues: [0, 1, 2, 3]
+        allowedValues: [0, 1, 2, 3],
+        optional: true
     },
 
     startDate: {
         type: Date,
-        autoform: ApiCommon.AutoformBootstrapDatepickerDef()
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
+        optional: true
     }
 
 });
