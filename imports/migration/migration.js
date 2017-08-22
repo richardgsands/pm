@@ -2,6 +2,7 @@
 // Usage: Open terminal in project directory and execute `meteor shell` 
 //        Run `Migration.importJSON(<filename>)`
 //        where filename is for the file in the private/migration folder
+import moment from 'moment';
 
 import '/imports/api/collections';
 
@@ -13,12 +14,16 @@ export default Migration = {
         console.log(`migrating ${data.projects.length} projects...`);
 
         data.projects.forEach((project) => {
+            console.log('importing...', project.code, project.name, project.priority, project.start_date);
 
             Projects.insert({
 
-                projectCode: project.code
+                code: project.code,
+                name: project.name,
+                priority: (p = project.priority) ? parseInt(p) : null,
+                startDate: (d = project.start_date) ? moment(d, 'YYYY-MM-DD').toDate() : null
 
-            })
+            });
 
         });
 
