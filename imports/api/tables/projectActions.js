@@ -9,7 +9,7 @@ new Tabular.Table({
     {data: "status", title: "Status"},
     {data: "action", title: "Action"},
     {data: "effort", title: "Effort (days)"},
-    {data: "getOwner().displayName()", title: "Owner"},
+    {data: "(o = this.getOwner()) ? o.displayName() : (No owner)", title: "Owner"},
     {
       data: "dueDate",
       title: "Due Date",
@@ -17,7 +17,7 @@ new Tabular.Table({
         if (val instanceof Date) {
           return moment(val).format("DD/MM/YYYY");
         } else {
-          return "(None))";
+          return "(None)";
         }
       }
     }

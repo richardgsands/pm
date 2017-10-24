@@ -3,7 +3,12 @@
 Meteor.users.helpers({
 
     displayName() {
-        return (this.profile && this.profile.firstName && this.profile.lastName) ? `${this.profile.firstName} ${this.profile.lastName}` : `(No name: ${this._id})`;
+        if ( this.profile && this.profile.firstName && this.profile.lastName ) 
+            return `${this.profile.firstName} ${this.profile.lastName}`;
+        else if ( this.profile && this.profile.initials )
+            return `${this.profile.initials}`;
+        else
+            return `(No name: ${this._id})`;
     }
 
 })

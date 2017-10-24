@@ -1,5 +1,16 @@
 export default ApiCommon = {
     
+    AutoformHashPickerDef(object) {
+        return {
+            type: 'select2',
+            options: function() {
+                return Object.keys(object).map(key => {
+                    return { label: `${key} (${object[key]})`, value: key }
+                });
+            }
+        }
+    },
+
     AutoformBootstrapDatepickerDef() {
         return {
             type: "bootstrap-datepicker",
