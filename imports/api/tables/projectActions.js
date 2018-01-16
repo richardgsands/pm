@@ -1,4 +1,5 @@
 import ProjectActions from '../collections/projectActions.js';
+import ProjectMilestones from '../collections/projectMilestones.js';
 import Tabular from 'meteor/aldeed:tabular';
 import moment from 'moment';
 

@@ -1,14 +1,30 @@
 export default ApiCommon = {
     
-    AutoformHashPickerDef(object) {
-        return {
+    AutoformHashPickerDef(object, options) {
+        options = options || {};
+
+        return _.extend({
             type: 'select2',
             options: function() {
                 return Object.keys(object).map(key => {
                     return { label: `${key} (${object[key]})`, value: key }
                 });
             }
-        }
+        }, options);
+    },
+
+    AutoformCollectionPickerDef(collection, labelProperty, options) {
+        options = options || {};
+
+        return _.extend({
+            type: 'select2',
+            options: function() {
+                return collection.find({}).map(function(doc) {
+                    debugger;
+                    return { label: doc[labelProperty], value: doc._id };
+                });
+            }
+        }, options);
     },
 
     AutoformBootstrapDatepickerDef() {

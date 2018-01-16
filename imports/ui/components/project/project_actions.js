@@ -1,4 +1,5 @@
 import ProjectActions from '/imports/api/collections/projectActions.js';
+import ProjectMilestones from '/imports/api/collections/projectMilestones.js';
 
 import './project_actions.html';
 
@@ -6,6 +7,10 @@ Template.project_actions.helpers({
 
     ProjectActions() {
         return ProjectActions;
+    },
+
+    ProjectMilestones() {
+        return ProjectMilestones;
     },
 
     defaultValues() {

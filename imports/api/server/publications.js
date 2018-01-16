@@ -14,6 +14,10 @@ Meteor.publish('projects.all', function () {
   return Projects.find();
 });
 
+Meteor.publish('projectMilestones.all', function() {
+  return ProjectMilestones.find();
+});
+
 Meteor.publish('timeentrys.user', function (userId) {
   return TimeEntrys.find({ userId });
 });
