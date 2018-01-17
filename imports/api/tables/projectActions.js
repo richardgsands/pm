@@ -8,7 +8,7 @@ new Tabular.Table({
   collection: ProjectActions,
   columns: [
     {data: "status", title: "Status"},
-    {data: "action", title: "Action"},
+    {data: "description", title: "Action"},
     {data: "effort", title: "Effort (days)"},
     {data: "(o = this.getOwner()) ? o.displayName() : (No owner)", title: "Owner"},
     {

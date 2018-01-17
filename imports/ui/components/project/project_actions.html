@@ -1,16 +1,16 @@
 <template name="project_actions">
 
     <div class="panel panel-default">
-        <div class="panel-heading collapsed" data-toggle="collapse" href="#addActionBody" role="button" aria-expanded="false" aria-controls="addActionBody">Add an action</div>
-        <div class="panel-body collapse" id="addActionBody" role="tabpanel" aria-labelledby="headingTwo">
-            {{> quickForm collection=ProjectActions type='insert' id='addProjectAction' doc=defaultValues}}
+        <div class="panel-heading collapsed" data-toggle="collapse" href="#addMilestoneBody" role="button" aria-expanded="false" aria-controls="addMilestoneBody">Add a milestone</div>
+        <div class="panel-body collapse" id="addMilestoneBody" role="tabpanel" aria-labelledby="headingTwo">
+            {{> quickForm collection=ProjectMilestones type='insert' id='addProjectActionMilestone' doc=defaultValues}}
         </div>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading collapsed" data-toggle="collapse" href="#addMilestoneBody" role="button" aria-expanded="false" aria-controls="addMilestoneBody">Add a milestone</div>
-        <div class="panel-body collapse" id="addMilestoneBody" role="tabpanel" aria-labelledby="headingTwo">
-            {{> quickForm collection=ProjectMilestones type='insert' id='addProjectActionMilestone' doc=defaultValues}}
+        <div class="panel-heading collapsed" data-toggle="collapse" href="#addActionBody" role="button" aria-expanded="false" aria-controls="addActionBody">Add an action</div>
+        <div class="panel-body collapse" id="addActionBody" role="tabpanel" aria-labelledby="headingTwo">
+            {{> quickForm collection=ProjectActions type='insert' id='addProjectAction' doc=defaultValues}}
         </div>
     </div>
 

@@ -56,6 +56,9 @@ export default ApiCommon = {
                 return Meteor.users.find({}).map(function(user) {
                     return { label: `${user.displayName()}`, value: user._id };
                 });
+            },
+            select2Options: {
+                width: '50%'
             }
         };
     }

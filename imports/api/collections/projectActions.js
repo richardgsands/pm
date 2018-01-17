@@ -11,13 +11,13 @@ export default ProjectActions = new Mongo.Collection('projectActions');
 ProjectActions.Statuses = {
     // todo: implement others (here and in projectMilestones helpers)
     NS: "Not started",
-    // RS: "RS",
+    RS: "RS",
     IP: "In progress",
     CO: "Complete",
-    // SD: "SD",
+    SD: "SD",
     OH: "On hold",
-    // TR: "TR",
-    // NA: "NA"
+    TR: "TR",
+    NA: "NA"
 }
 
 ProjectActions.schema = new SimpleSchema({
@@ -36,6 +36,12 @@ ProjectActions.schema = new SimpleSchema({
         defaultValue: Object.keys(ProjectActions.Statuses)[0],
     },
 
+    owner: {
+        type: String,
+        autoform: ApiCommon.AutoformUserPickerDef(),
+        optional: true
+    },
+
     milestone: {
         type: String,
         allowedValues: Object.keys(ProjectActions.Statuses),
@@ -43,20 +49,15 @@ ProjectActions.schema = new SimpleSchema({
         optional: true
     },
 
-    action: {
+    description: {
         type: String,
         optional: true
     },
 
     effort: {
         type: Number,
-        optional: true
-    },
-
-    owner: {
-        type: String,
-        autoform: ApiCommon.AutoformUserPickerDef(),
-        optional: true
+        optional: true,
+        autoform: { label: "Effort (days)" }
     },
 
     dueDate: {

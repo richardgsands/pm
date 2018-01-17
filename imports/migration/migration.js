@@ -8,13 +8,28 @@ import '/imports/api/collections';
 
 export default Migration = {
 
+    clearAllProjects(checkStr) {
+        if ( !_safetyCheck(checkStr) ) return;
+
+        ProjectActions.remove({});
+        ProjectMilestones.remove({});
+        Projects.remove({});
+
+        console.log('All projects removed.');
+    },
+
     importJSON(filename) {
+
+        // TODO:try/catch to remove project if error occurs?
 
         let data = JSON.parse( Assets.getText(`migration/${filename}`) );
         console.log(`migrating ${data.projects.length} projects...`);
 
         data.projects.forEach(project => {
             console.log('importing...', project.code, project.name, project.priority, project.start_date);
+            if ( Projects.find({ code: project.code }) ) {
+                console.log('  > project already exists, skipping...');
+            };
 
             // create project
 
@@ -31,18 +46,27 @@ export default Migration = {
 
             project.actions.forEach(action => {
 
-                ProjectActions.insert({
+                if (action.milestone) {
+                    ProjectMilestones.insert({
 
-                    projectId: projectId,
-                    status: (s = action.status) ? s.toUpperCase() : null,
-                    action: action.description,
-                    effort: (e = action.effort) ? parseFloat(e) : null,
-                    owner: _getUserIdByInitials(action.responsible),
-                    dueDate: _getDate(action.due_due)
+                        projectId: projectId,
+                        description: action.description
 
-                    // todo: io - should this be linked to outcomes?
+                    });
+                } else {
+                    ProjectActions.insert({
 
-                });
+                        projectId: projectId,
+                        status: (s = action.status) ? s.toUpperCase() : Object.keys(ProjectActions.Statuses)[0],
+                        description: action.description,
+                        effort: (e = action.effort) ? parseFloat(e) : null,
+                        owner: _getUserIdByInitials(action.responsible),
+                        dueDate: _getDate(action.due_due)
+    
+                        // todo: io - should this be linked to outcomes?
+    
+                    });
+                }
 
             })
 
@@ -78,4 +102,13 @@ function _getUserIdByInitials(initials) {
         }
     });
     return userId;
+}
+
+function _safetyCheck(checkStr) {
+    let nowStr = moment().format('hhmm');
+    if ( checkStr != nowStr ) {
+        console.log("Safety check failed, please provide current server system time in format hhmm as string, e.g., '" + nowStr + "'");
+        return false;
+    }
+    return true;
 }
