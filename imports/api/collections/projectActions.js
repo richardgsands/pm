@@ -36,15 +36,14 @@ ProjectActions.schema = new SimpleSchema({
         defaultValue: Object.keys(ProjectActions.Statuses)[0],
     },
 
-    owner: {
+    ownerId: {
         type: String,
         autoform: ApiCommon.AutoformUserPickerDef(),
         optional: true
     },
 
-    milestone: {
+    milestoneId: {
         type: String,
-        allowedValues: Object.keys(ProjectActions.Statuses),
         autoform: ApiCommon.AutoformCollectionPickerDef(ProjectMilestones, 'description', { type: 'select-radio', template: 'buttonGroup' }),
         optional: true
     },
@@ -84,9 +83,11 @@ ProjectActions.helpers({
     },
 
     getOwner() {
-        debugger;
-        return Meteor.users.findOne(this.owner);
-    }
+        return Meteor.users.findOne(this.ownerId);
+    },
 
+    getMilestone() {
+        return ProjectMilestones.findOne(this.milestoneId);
+    }
 
 });

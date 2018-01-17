@@ -27,7 +27,7 @@ export default Migration = {
 
         data.projects.forEach(project => {
             console.log('importing...', project.code, project.name, project.priority, project.start_date);
-            if ( Projects.find({ code: project.code }) ) {
+            if ( Projects.findOne({ code: project.code }) ) {
                 console.log('  > project already exists, skipping...');
             };
 
@@ -42,26 +42,39 @@ export default Migration = {
 
             });
 
+            // create project milestones
+
+            let milestoneIds = [];
+            _.where(project.actions, {milestone:true}).forEach(milestone => {
+
+                milestoneIds.push(
+                    ProjectMilestones.insert({
+                        projectId: projectId,
+                        description: milestone.description
+                    })
+                );
+
+            });
+
             // create project actions
 
-            project.actions.forEach(action => {
+            let milestoneCounter = 0;
+            project.actions.forEach(action => {         // loop over all 'actions' (including milestones)
 
                 if (action.milestone) {
-                    ProjectMilestones.insert({
-
-                        projectId: projectId,
-                        description: action.description
-
-                    });
+                    milestoneCounter++;
+                    
                 } else {
                     ProjectActions.insert({
 
                         projectId: projectId,
+                        milestoneId: milestoneIds[milestoneCounter] || null,
                         status: (s = action.status) ? s.toUpperCase() : Object.keys(ProjectActions.Statuses)[0],
                         description: action.description,
                         effort: (e = action.effort) ? parseFloat(e) : null,
-                        owner: _getUserIdByInitials(action.responsible),
-                        dueDate: _getDate(action.due_due)
+                        ownerId: _getUserIdByInitials(action.responsible),
+                        dueDate: _getDate(action.due_date),
+                        completedDate: _getDate(action.complete_date)
     
                         // todo: io - should this be linked to outcomes?
     

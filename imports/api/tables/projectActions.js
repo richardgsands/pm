@@ -8,12 +8,24 @@ new Tabular.Table({
   collection: ProjectActions,
   columns: [
     {data: "status", title: "Status"},
+    {data: "milestone", title: "this.getMilestone()"},
     {data: "description", title: "Action"},
     {data: "effort", title: "Effort (days)"},
     {data: "(o = this.getOwner()) ? o.displayName() : (No owner)", title: "Owner"},
     {
       data: "dueDate",
-      title: "Due Date",
+      title: "Due",
+      render: function (val, type, doc) {
+        if (val instanceof Date) {
+          return moment(val).format("DD/MM/YYYY");
+        } else {
+          return "(None)";
+        }
+      }
+    },
+    {
+      data: "completedDate",
+      title: "Completed",
       render: function (val, type, doc) {
         if (val instanceof Date) {
           return moment(val).format("DD/MM/YYYY");
@@ -23,5 +35,8 @@ new Tabular.Table({
       }
     }
   ],
-  extraFields: ['projectId', 'owner']
+  extraFields: ['projectId', 'milestoneId', 'ownerId'],
+
+  // DataTables options
+  paging: false,
 });
