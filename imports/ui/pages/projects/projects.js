@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 
 import '/imports/api/tables/projects.js';
 import '/imports/ui/components/quickFormModal/quickFormModal.js';
+import '/imports/ui/components/gantt/gantt.js';
 
 import './projects.html';
 

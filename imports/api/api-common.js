@@ -20,7 +20,6 @@ export default ApiCommon = {
             type: 'select2',
             options: function() {
                 return collection.find({}).map(function(doc) {
-                    debugger;
                     return { label: doc[labelProperty], value: doc._id };
                 });
             }

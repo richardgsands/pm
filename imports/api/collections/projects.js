@@ -41,6 +41,10 @@ AuditHooks(Projects);
 
 Projects.helpers({
 
+    displayCodeAndName() {
+        return `${this.code} (${this.name})`;
+    },
+
     timeEntrys() {
         return TimeEntrys.find({ projectId: this._id });
     },

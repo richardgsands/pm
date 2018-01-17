@@ -58,7 +58,6 @@ Template.App_timesheet.helpers({
     },
 
     defaultValues() {
-        // debugger;
         let hoursForDate = 0;
         TimeEntrys.find({ userId: Template.instance().getUserId() }).forEach((te) => {
             hoursForDate += te.hours;

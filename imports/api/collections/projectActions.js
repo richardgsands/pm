@@ -59,6 +59,12 @@ ProjectActions.schema = new SimpleSchema({
         autoform: { label: "Effort (days)" }
     },
 
+    progress: {
+        type: Number,
+        optional:true,
+        autoform: { type: 'hidden' }
+    },
+
     dueDate: {
         type: Date,
         autoform: ApiCommon.AutoformBootstrapDatepickerDef(),

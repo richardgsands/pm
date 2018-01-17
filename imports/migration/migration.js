@@ -74,7 +74,8 @@ export default Migration = {
                         effort: (e = action.effort) ? parseFloat(e) : null,
                         ownerId: _getUserIdByInitials(action.responsible),
                         dueDate: _getDate(action.due_date),
-                        completedDate: _getDate(action.complete_date)
+                        completedDate: _getDate(action.complete_date),
+                        progress: _getProgressFromStatus(action.status)
     
                         // todo: io - should this be linked to outcomes?
     
@@ -117,10 +118,23 @@ function _getUserIdByInitials(initials) {
     return userId;
 }
 
+function _getProgressFromStatus(status) {
+    if (!status) return 0;
+
+    switch (status.toUpperCase()) {
+        case ProjectActions.Statuses.NS:
+            return 0;
+        case ProjectActions.Statuses.CO:
+            return 1
+        default:
+            return 0.5
+    }
+}
+
 function _safetyCheck(checkStr) {
-    let nowStr = moment().format('hhmm');
+    let nowStr = moment().format('HHmm');
     if ( checkStr != nowStr ) {
-        console.log("Safety check failed, please provide current server system time in format hhmm as string, e.g., '" + nowStr + "'");
+        console.log("Safety check failed, please provide current server system time in format HHmm as string, e.g., '" + nowStr + "'");
         return false;
     }
     return true;
