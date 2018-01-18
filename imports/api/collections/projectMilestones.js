@@ -40,9 +40,10 @@ ProjectMilestones.helpers({
     },
 
     getStatus() {
+        // aggregated effort is based on child actions
         let ns = true;
         let co = true;
-        ProjectActions.getActions.forEach((a) => {
+        this.getActions().forEach((a) => {
             if ( a.status === ProjectActions.Statuses.NS ) {
                 co = false;
             } else if ( a.status === ProjectActions.IP || a.status === ProjectActions.OH ) {
@@ -62,27 +63,43 @@ ProjectMilestones.helpers({
     },
 
     getEffort() {
+        // aggregated effort is based on child actions (could be zero)
         let effort = 0;
-        ProjectActions.getActions.forEach((a) => {
+        this.getActions().forEach((a) => {
             effort += a.effort || 0;
         });
         return effort;
     },
 
-    getDueDate() {
-        let dueDate = 0;
-        ProjectActions.getActions.forEach((a) => {
-            dueDate = max(dueDate, a.dueDate)
+    getStartDate() {
+        // start date is based on child actions (for milestone), falling back to project if none have start dates
+        let startDate = 0;
+        this.getActions().forEach((a) => {
+            startDate = min(startDate, (a.startDate||0))      // use actual inputted value here (rather than aggregated value defined in action helpers)
         });
-        return dueDate;
+        
+        // if we have found a start date, use that
+        if (startDate != 0)
+            return startDate;
+        
+        // otherwise use project start date
+        return this.project.getStartDate();
     },
 
-    getCompletedDate() {
-        let completedDate = 0;
-        ProjectActions.getActions.forEach((a) => {
-            completedDate = max(completedDate, a.completedDate)
+    getEndDate() {
+        // end date is based on child actions (for milestone) (dueDate/completedDate), or project if none have end dates
+        let endDate = 0;
+        this.getActions().forEach((a) => {
+            if (a.completedDate) endDate = max(endDate, a.completedDate);
+            else if (a.dueDate) endDate = max(endDate, a.dueDate);
         });
-        return completedDate;
+
+        // if we have found an end date, use that
+        if (endDate != 0)
+            return endDate;
+        
+        // otherwise use project end date
+        return this.project.getEndDate();
     }
 
 });

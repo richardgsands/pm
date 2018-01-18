@@ -94,6 +94,10 @@ ProjectActions.helpers({
 
     getMilestone() {
         return ProjectMilestones.findOne(this.milestoneId);
+    },
+
+    getStartDate() {
+        if (this.startDate)
     }
 
 });

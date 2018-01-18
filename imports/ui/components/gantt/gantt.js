@@ -17,7 +17,7 @@ Template.gantt.helpers({
 
 function _getGanttDataForProjects(projects) {
     let ganttTasks = [];
-    debugger
+
     projects.forEach((p) => {
         ganttTasks.push({
             id: p._id,

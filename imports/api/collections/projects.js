@@ -11,6 +11,13 @@ import TimeEntrys from './timeentrys';
 
 export default Projects = new Mongo.Collection('projects');
 
+// TODO: remove the need for this
+Projects.MissingDataDefaults = {
+    // defaults to be use if data missing
+    DefaultStartDate: moment("1st Jan 2017"),
+    DefaultEndDate:   moment("31st Dec 2018")
+}
+
 Projects.schema = new SimpleSchema({
 
     code: {
@@ -28,7 +35,13 @@ Projects.schema = new SimpleSchema({
         optional: true
     },
 
-    startDate: {
+    startDate: {            // actual date of initiation gate
+        type: Date,
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
+        optional: true
+    },
+
+    completionDate: {       // actual date of closure gate
         type: Date,
         autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
         optional: true
@@ -43,6 +56,49 @@ Projects.helpers({
 
     displayCodeAndName() {
         return `${this.code} (${this.name})`;
+    },
+
+    getActions() {
+        return ProjectActions.find({projectId: this._id});
+    },
+
+    getStartDate() {
+        // use inputted start date if present
+        if (this.startDate) 
+            return this.startDate;
+
+        // otherwise determine from actions (for project)
+        let startDate = 0;
+        this.getActions().forEach((a) => {
+            startDate = min(startDate, (a.startDate||0))      // use actual inputted value here (rather than aggregated value defined in action helpers)
+        });
+        
+        // if we have found a start date, use that
+        if (startDate != 0)
+            return startDate;
+
+        // otherwise use default
+        return Projects.MissingDataDefaults.DefaultStartDate;
+    },
+
+    getEndDate() {
+        // use inputted end date if present
+        if (this.endDate) 
+            return this.endDate;
+
+        // otherwise determine from actions (for project)
+        let endDate = 0;
+        this.getActions().forEach((a) => {
+            if (a.completedDate) endDate = max(endDate, a.completedDate);
+            else if (a.dueDate) endDate = max(endDate, a.dueDate);
+        });
+        
+        // if we have found an end date, use that
+        if (endDate != 0)
+            return endDate;
+
+        // otherwise use default
+        return Projects.MissingDataDefaults.DefaultEndDate;
     },
 
     timeEntrys() {
