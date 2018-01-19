@@ -20,6 +20,15 @@ ProjectMilestones.schema = new SimpleSchema({
     description: {
         type: String,
         optional: true
+    },
+
+    _order: {
+        type: Number,
+        // autoValue() {
+        //     if (this.insert) {
+
+        //     }
+        // }
     }
 
 });

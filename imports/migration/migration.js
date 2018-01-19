@@ -45,12 +45,13 @@ export default Migration = {
             // create project milestones
 
             let milestoneIds = [];
-            _.where(project.actions, {milestone:true}).forEach(milestone => {
+            _.where(project.actions, {milestone:true}).forEach((milestone, milestoneIndex) => {
 
                 milestoneIds.push(
                     ProjectMilestones.insert({
                         projectId: projectId,
-                        description: milestone.description
+                        description: milestone.description,
+                        _order: index
                     })
                 );
 
@@ -59,6 +60,7 @@ export default Migration = {
             // create project actions
 
             let milestoneCounter = 0;
+            let actionIndex = 0;
             project.actions.forEach(action => {         // loop over all 'actions' (including milestones)
 
                 if (action.milestone) {
@@ -75,11 +77,13 @@ export default Migration = {
                         ownerId: _getUserIdByInitials(action.responsible),
                         dueDate: _getDate(action.due_date),
                         completedDate: _getDate(action.complete_date),
-                        progress: _getProgressFromStatus(action.status)
+                        progress: _getProgressFromStatus(action.status),
+                        _order: actionIndex
     
                         // todo: io - should this be linked to outcomes?
     
                     });
+                    actionIndex++
                 }
 
             })
