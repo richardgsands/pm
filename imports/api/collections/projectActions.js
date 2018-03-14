@@ -75,6 +75,12 @@ ProjectActions.schema = new SimpleSchema({
         type: Date,
         autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
         optional: true
+    },
+
+    startDate: {
+        type: Date,
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
+        optional: true
     }
 
 });
@@ -97,7 +103,7 @@ ProjectActions.helpers({
     },
 
     getStartDate() {
-        if (this.startDate)
+        return this.startDate
     }
 
 });
