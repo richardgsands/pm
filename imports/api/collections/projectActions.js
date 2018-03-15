@@ -4,7 +4,6 @@ import SimpleSchema from 'simpl-schema';
 import AuditHooks from '../audit-hooks';
 import ApiCommon from '../api-common';
 import Projects from './projects';
-import ProjectMilestones from './projectMilestones';
 
 export default ProjectActions = new Mongo.Collection('projectActions');
 
@@ -42,10 +41,8 @@ ProjectActions.schema = new SimpleSchema({
         optional: true
     },
 
-    milestoneId: {
-        type: String,
-        autoform: ApiCommon.AutoformCollectionPickerDef(ProjectMilestones, 'description', { type: 'select-radio', template: 'buttonGroup' }),
-        optional: true
+    milestone: {
+        type: Boolean
     },
 
     description: {
@@ -96,10 +93,6 @@ ProjectActions.helpers({
 
     getOwner() {
         return Meteor.users.findOne(this.ownerId);
-    },
-
-    getMilestone() {
-        return ProjectMilestones.findOne(this.milestoneId);
     },
 
     getStartDate() {

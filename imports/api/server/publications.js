@@ -5,7 +5,6 @@ import { publishComposite } from 'meteor/reywood:publish-composite';
 
 import Projects from '../collections/projects.js';
 import TimeEntrys from '../collections/timeentrys.js';
-import projectMilestones from '../collections/projectMilestones';
 
 Meteor.publish('users.all', function() {
   return Meteor.users.find();
@@ -30,12 +29,6 @@ publishComposite('project.code.joins', function(code) {
         find(project) {
           // find all timeentrys for project
           return TimeEntrys.find({ projectId: project._id });
-        }
-      },
-      {
-        find(project) {
-          // find all milestones for project
-          return projectMilestones.find({ projectId:project._id });
         }
       }
     ]

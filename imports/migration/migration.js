@@ -12,7 +12,7 @@ export default Migration = {
         if ( !_safetyCheck(checkStr) ) return;
 
         ProjectActions.remove({});
-        ProjectMilestones.remove({});
+        // ProjectMilestones.remove({});
         Projects.remove({});
 
         console.log('All projects removed.');
@@ -44,33 +44,34 @@ export default Migration = {
 
             // create project milestones
 
-            let milestoneIds = [];
-            _.where(project.actions, {milestone:true}).forEach((milestone, milestoneIndex) => {
+            // let milestoneIds = [];
+            // _.where(project.actions, {milestone:true}).forEach((milestone, milestoneIndex) => {
 
-                milestoneIds.push(
-                    ProjectMilestones.insert({
-                        projectId: projectId,
-                        description: milestone.description,
-                        _order: index
-                    })
-                );
+            //     milestoneIds.push(
+            //         ProjectMilestones.insert({
+            //             projectId: projectId,
+            //             description: milestone.description,
+            //             _order: index
+            //         })
+            //     );
 
-            });
+            // });
 
             // create project actions
 
-            let milestoneCounter = 0;
+            // let milestoneCounter = 0;
             let actionIndex = 0;
             project.actions.forEach(action => {         // loop over all 'actions' (including milestones)
 
-                if (action.milestone) {
-                    milestoneCounter++;
+                // if (action.milestone) {
+                //     milestoneCounter++;
                     
-                } else {
+                // } else {
                     ProjectActions.insert({
 
                         projectId: projectId,
-                        milestoneId: milestoneIds[milestoneCounter] || null,
+                        // milestoneId: milestoneIds[milestoneCounter] || null,
+                        milestone: (!!action.milestone),
                         status: (s = action.status) ? s.toUpperCase() : Object.keys(ProjectActions.Statuses)[0],
                         description: action.description,
                         effort: (e = action.effort) ? parseFloat(e) : null,
@@ -84,7 +85,7 @@ export default Migration = {
     
                     });
                     actionIndex++
-                }
+                // }
 
             })
 

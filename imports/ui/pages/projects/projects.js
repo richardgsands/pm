@@ -8,7 +8,6 @@ import './projects.html';
 
 Template.App_projects.onCreated(function() {
     this.subscribe('projects.all');
-    this.subscribe('projectMilestones.all');
 });
 
 Template.App_projects.helpers({

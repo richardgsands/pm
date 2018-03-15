@@ -1,5 +1,4 @@
 import ProjectActions from '../collections/projectActions.js';
-import ProjectMilestones from '../collections/projectMilestones.js';
 import Tabular from 'meteor/aldeed:tabular';
 import moment from 'moment';
 
@@ -8,7 +7,6 @@ new Tabular.Table({
   collection: ProjectActions,
   columns: [
     {data: "status", title: "Status"},
-    {data: "milestone", title: "this.getMilestone()"},
     {data: "description", title: "Action"},
     {data: "effort", title: "Effort (days)"},
     {data: "(o = this.getOwner()) ? o.displayName() : (No owner)", title: "Owner"},
@@ -35,7 +33,8 @@ new Tabular.Table({
       }
     }
   ],
-  extraFields: ['projectId', 'milestoneId', 'ownerId'],
+  extraFields: ['projectId', 'ownerId', '_order', 'milestone'],  // NB: data for edit form is dependent on subscription created by table, 
+                                                                // i.e. include all fields that need to be fetched for edit form in columns or extraFields
 
   // DataTables options
   paging: false,
