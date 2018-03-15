@@ -47,7 +47,10 @@ ProjectActions.schema = new SimpleSchema({
 
     description: {
         type: String,
-        optional: true
+        optional: true,
+        autoform: {
+            rows: 3
+        }        
     },
 
     effort: {
@@ -58,7 +61,7 @@ ProjectActions.schema = new SimpleSchema({
 
     progress: {
         type: Number,
-        optional:true,
+        optional: true,
         autoform: { type: 'hidden' }
     },
 
@@ -76,8 +79,12 @@ ProjectActions.schema = new SimpleSchema({
 
     startDate: {
         type: Date,
-        autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
-        optional: true
+        autoform: { type: 'hidden' }, //_.ApiCommon.AutoformBootstrapDatepickerDef(),
+        optional: true,
+    },
+
+    _order: {
+        type: Number
     }
 
 });
