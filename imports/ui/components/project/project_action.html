@@ -1,0 +1,13 @@
+<template name="project_action">
+    <div class="panel panel-default js-action" data-project-id="{{action._id}}">
+        <div class="panel-heading">
+            <div class="label {{#if ($eq action.status 'CO')}}label-success{{else if ($eq action.status 'IP')}}label-primary{{else}}label-default{{/if}}">
+                {{ renderStatus action.status }}
+            </div>
+            {{action.description}}
+        </div>
+        <div class="panel-body">
+            <div>{{action._order}}    {{action._id}}    {{action.description}}</div>
+        </div>
+    </div>
+</template>

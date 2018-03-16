@@ -11,6 +11,7 @@ import '../../ui/pages/project/project.js';
 import '../../ui/components/project/project_tor.js';
 import '../../ui/components/project/project_outcomes.js';
 import '../../ui/components/project/project_actions.js';
+import '../../ui/components/project/project_action.js';
 import '../../ui/components/project/project_people.js';
 import '../../ui/components/project/project_money.js';
 import '../../ui/components/project/project_status.js';

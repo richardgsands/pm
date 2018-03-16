@@ -26,10 +26,6 @@ Template.project_actions.helpers({
         return {
             projectId: Template.instance().data._id
         }
-    },
-
-    renderStatus(status) {
-        return `${status} (${ProjectActions.Statuses[status]})`;
     }
 
 });
