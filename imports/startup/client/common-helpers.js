@@ -13,6 +13,11 @@ Template.registerHelper('displayMonth', function (date, format) {
     return m.format('MMM-YY');
 })
 
+Template.registerHelper('displayDate', function (date, format) {
+    const m = Template.moment(date, format);
+    return m.format('DD-MMM-YY');
+})
+
 // general stuff
 Template.registerHelper('renderIf', (cond, str) => {
     return (cond) ? str : null;

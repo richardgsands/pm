@@ -49,25 +49,6 @@ Template.project_actions.events({
             omitFields: ['projectId']
         });
 
-    },
-
-    'click .js-action': function(event) {
-        let projectId = event.currentTarget.dataset.projectId;
-        Modal.show('quickFormModal', {
-            title: "Edit action",
-            type: 'update',
-            collection: ProjectActions,
-            id: 'editProjectActionFormModal',
-            doc: { _id: projectId },
-            omitFields: ['projectId']
-        });
     }
 
 });
-
-// close edit modal on success
-AutoForm.addHooks('editProjectActionFormModal', {
-    onSuccess: () => {
-        Modal.hide();
-    }
-}, true);

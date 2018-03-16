@@ -5,3 +5,4 @@ import './common-helpers.js';
 import './accounts-ui.js'
 import './datatables';
 import './select2';
+import './autoform';

@@ -1,17 +1,18 @@
 <template name="project_actions">
 
-    <div class="panel panel-default">
-        <div class="panel-heading collapsed" data-toggle="collapse" href="#addActionBody" role="button" aria-expanded="false" aria-controls="addActionBody">Add an action</div>
-        <div class="panel-body collapse" id="addActionBody" role="tabpanel" aria-labelledby="headingTwo">
-            {{> quickForm collection=ProjectActions type='insert' id='addProjectAction' doc=defaultValues}}
-        </div>
-    </div>
-
-    <!-- {{> gantt}} -->
     {{#sortable items=projectActions sortField="_order"}}
         {{> project_action action=this}}
     {{/sortable}}
 
-    {{> tabular table=TabularTables.ProjectActions selector=tableSelector class="table table-striped table-bordered table-condensed"}}
+    <div class="panel panel-default">
+        <div class="panel-heading collapsed" data-toggle="collapse" href="#addActionBody" role="button" aria-expanded="false" aria-controls="addActionBody">
+            + add an action
+        </div>
+        <div class="panel-body collapse" id="addActionBody" role="tabpanel" aria-labelledby="addActionBody">
+            {{> quickForm collection=ProjectActions type='insert' id='addProjectAction' doc=defaultValues}}
+        </div>
+    </div>
+    
+    <!-- {{> tabular table=TabularTables.ProjectActions selector=tableSelector class="table table-striped table-bordered table-condensed"}} -->
 
 </template>

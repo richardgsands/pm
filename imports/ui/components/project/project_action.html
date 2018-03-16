@@ -1,13 +1,34 @@
 <template name="project_action">
-    <div class="panel panel-default js-action" data-project-id="{{action._id}}">
-        <div class="panel-heading">
-            <div class="label {{#if ($eq action.status 'CO')}}label-success{{else if ($eq action.status 'IP')}}label-primary{{else}}label-default{{/if}}">
-                {{ renderStatus action.status }}
+    <div class="panel {{#if ($eq action.status 'CO')}}panel-success{{else if ($eq action.status 'IP')}}panel-info{{else}}panel-default{{/if}} js-action" data-project-id="{{action._id}}">
+
+        <div class="panel-heading collapsed" data-toggle="collapse" href="#collapse_{{action._id}}" role="button" aria-expanded="false" aria-controls="collapse_{{action._id}}">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="label {{#if ($eq action.status 'CO')}}label-success{{else if ($eq action.status 'IP')}}label-primary{{else}}label-default{{/if}}">
+                        {{ renderStatus action.status }}
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    {{action.description}}
+                </div>
+                <div class="col-md-1">
+                    {{#if action.effort}}{{action.effort}} days{{/if}}
+                </div>
+                <div class="col-md-2">
+                    {{#if action.completedDate}}
+                    Completed: {{displayDate action.completedDate}}
+                    {{else if action.dueDate}}
+                    Due: {{displayDate action.dueDate}}
+                    {{else}}
+                    Due:
+                    {{/if}}
+                </div>
+        
             </div>
-            {{action.description}}
         </div>
-        <div class="panel-body">
-            <div>{{action._order}}    {{action._id}}    {{action.description}}</div>
+        <div class="panel-body collapse action" id="collapse_{{action._id}}" role="tabpanel" aria-labelledby="collapse_{{action._id}}">
+            {{> quickForm collection=ProjectActions type='update' id=action._id doc=action}}
         </div>
+
     </div>
 </template>
