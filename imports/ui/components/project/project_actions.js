@@ -2,12 +2,18 @@ import ProjectActions from '/imports/api/collections/projectActions.js';
 
 import './project_actions.html';
 
+Template.project_actions.onCreated(function() {
+    this.subscribe('projectsActions.all');
+});
+
 Template.project_actions.helpers({
 
     ProjectActions() {
         return ProjectActions;
     },
 
+    projectActions() {
+        return Projects.findOne(Template.instance().data._id).getActions();
     },
 
     defaultValues() {
@@ -20,6 +26,10 @@ Template.project_actions.helpers({
         return {
             projectId: Template.instance().data._id
         }
+    },
+
+    renderStatus(status) {
+        return `${status} (${ProjectActions.Statuses[status]})`;
     }
 
 });
@@ -43,6 +53,18 @@ Template.project_actions.events({
             omitFields: ['projectId']
         });
 
+    },
+
+    'click .js-action': function(event) {
+        let projectId = event.currentTarget.dataset.projectId;
+        Modal.show('quickFormModal', {
+            title: "Edit action",
+            type: 'update',
+            collection: ProjectActions,
+            id: 'editProjectActionFormModal',
+            doc: { _id: projectId },
+            omitFields: ['projectId']
+        });
     }
 
 });

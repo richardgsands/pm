@@ -5,7 +5,9 @@ import moment from 'moment';
 new Tabular.Table({
   name: "ProjectActions",
   collection: ProjectActions,
+  order: [[0, "asc"]],
   columns: [
+    {data: "_order", visible: false},   // for sorting
     {data: "status", title: "Status"},
     {data: "description", title: "Action"},
     {data: "effort", title: "Effort (days)"},
@@ -38,4 +40,5 @@ new Tabular.Table({
 
   // DataTables options
   paging: false,
+  stateSave: false
 });

@@ -25,6 +25,7 @@ export default Migration = {
         let data = JSON.parse( Assets.getText(`migration/${filename}`) );
         console.log(`migrating ${data.projects.length} projects...`);
 
+        let actionIndex = 0;
         data.projects.forEach(project => {
             console.log('importing...', project.code, project.name, project.priority, project.start_date);
             if ( Projects.findOne({ code: project.code }) ) {
@@ -60,7 +61,6 @@ export default Migration = {
             // create project actions
 
             // let milestoneCounter = 0;
-            let actionIndex = 0;
             project.actions.forEach(action => {         // loop over all 'actions' (including milestones)
 
                 // if (action.milestone) {

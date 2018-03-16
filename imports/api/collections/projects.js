@@ -59,7 +59,7 @@ Projects.helpers({
     },
 
     getActions() {
-        return ProjectActions.find({projectId: this._id});
+        return ProjectActions.find({ projectId: this._id }, { sort: { _order: 1 } });
     },
 
     getStartDate() {

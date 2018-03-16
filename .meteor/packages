@@ -47,3 +47,5 @@ shell-server
 aldeed:autoform-bs-button-group-input
 dhtmlx:gantt
 konecty:mongo-counter
+rubaxa:sortable
+check                       # NB: required for rubaxa:sortable

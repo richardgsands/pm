@@ -10,11 +10,11 @@ export default ProjectActions = new Mongo.Collection('projectActions');
 ProjectActions.Statuses = {
     // todo: implement others (here and in projectMilestones helpers)
     NS: "Not started",
-    RS: "RS",
     IP: "In progress",
     CO: "Complete",
-    SD: "SD",
     OH: "On hold",
+    RS: "RS",
+    SD: "SD",
     TR: "TR",
     NA: "NA"
 }
@@ -32,13 +32,14 @@ ProjectActions.schema = new SimpleSchema({
         type: String,
         allowedValues: Object.keys(ProjectActions.Statuses),
         autoform: ApiCommon.AutoformHashPickerDef(ProjectActions.Statuses, { type: 'select-radio', template: 'buttonGroup' }),
-        defaultValue: Object.keys(ProjectActions.Statuses)[0],
+        //defaultValue: Object.keys(ProjectActions.Statuses)[0],
     },
 
     ownerId: {
         type: String,
         autoform: ApiCommon.AutoformUserPickerDef(),
-        optional: true
+        optional: true,
+        label: 'Owner'
     },
 
     milestone: {
@@ -84,7 +85,8 @@ ProjectActions.schema = new SimpleSchema({
     },
 
     _order: {
-        type: Number
+        type: Number,
+        autoform: { type: 'hidden' }
     }
 
 });
