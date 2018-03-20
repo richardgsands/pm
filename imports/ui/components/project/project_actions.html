@@ -1,8 +1,10 @@
 <template name="project_actions">
 
+    <div>
     {{#sortable items=projectActions sortField="_order"}}
         {{> project_action action=this}}
     {{/sortable}}
+    </div>
 
     <div class="panel panel-default">
         <div class="panel-heading collapsed" data-toggle="collapse" href="#addActionBody" role="button" aria-expanded="false" aria-controls="addActionBody">
