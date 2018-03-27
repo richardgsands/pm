@@ -39,3 +39,28 @@ publishComposite('project.code.joins', function(code) {
     ]
   }
 });
+
+// tabular
+
+publishComposite("tabular_Projects", function (tableName, ids, fields) {
+  return {
+    find() {
+      // find project by code
+      return Projects.find({_id: {$in: ["test"]}});
+    },
+    children: [   // nb: some subscriptions are handled automatically by Tabular
+      {
+        find(project) {
+          // find all timeentrys for project
+          return TimeEntrys.find({ projectId: project._id });
+        }
+      },
+      {
+        find(project) {
+          // find all timeentrys for project
+          return ProjectActions.find({ projectId: project._id });
+        }
+      }
+    ]
+  }
+});

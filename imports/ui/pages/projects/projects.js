@@ -8,6 +8,7 @@ import './projects.html';
 
 Template.App_projects.onCreated(function() {
     this.subscribe('projects.all');
+    this.subscribe('projectActions.all');   // todo:remove general sub
 });
 
 Template.App_projects.helpers({
