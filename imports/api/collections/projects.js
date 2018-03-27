@@ -29,6 +29,11 @@ Projects.schema = new SimpleSchema({
         type: String
     },
 
+    department: {
+        type: String,
+        allowedValues: ["Company", "RnD", "AE", "Support"]
+    },
+
     priority: {
         type: SimpleSchema.Integer,
         allowedValues: [0, 1, 2, 3],
@@ -45,6 +50,13 @@ Projects.schema = new SimpleSchema({
         type: Date,
         autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
         optional: true
+    },
+
+    projectManagerId: {
+        type: String,
+        autoform: ApiCommon.AutoformUserPickerDef(),
+        optional: true,
+        label: 'Project Manager'
     }
 
 });
@@ -58,8 +70,20 @@ Projects.helpers({
         return `${this.code} (${this.name})`;
     },
 
+    getProjectManager() {
+        return this.projectManagerId && Meteor.users.findOne(this.projectManagerId);
+    },
+
     getActions() {
         return ProjectActions.find({ projectId: this._id }, { sort: { _order: 1 } });
+    },
+
+    getEffort() {
+        let effort = 0;
+        this.getActions().forEach((a) => {
+            if (a.effort) effort += a.effort;
+        });
+        return effort;
     },
 
     getStartDate() {

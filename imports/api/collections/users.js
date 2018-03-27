@@ -1,5 +1,7 @@
 // import { Meteor } from 'meteor/meteor';
 
+// Meteor.users is automatically created by accounts package
+
 Meteor.users.helpers({
 
     displayName() {
@@ -12,6 +14,13 @@ Meteor.users.helpers({
             return `${this.profile.initials}`;
         else
             return `(No name: ${this._id})`;
+    },
+
+    displayInitials() {
+        if ( this.profile && this.profile.initials )
+            return `${this.profile.initials}`;
+        else
+            return `(No initials)`;
     }
 
 })
