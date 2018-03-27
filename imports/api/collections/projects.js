@@ -11,6 +11,20 @@ import TimeEntrys from './timeentrys';
 
 export default Projects = new Mongo.Collection('projects');
 
+// enums
+
+Projects.Departments = {
+    "CP": "Company", 
+    "PM":"Product Management",
+    "RD": "Research and Development", 
+    "AE": "Application Engineerning", 
+    "SU": "Support", 
+    "MK": "Marketing",
+    "HR": "Human Resources", 
+    "IT": "Information Technology", 
+    "HS": "Health and Safety"
+}
+
 // TODO: remove the need for this
 Projects.MissingDataDefaults = {
     // defaults to be use if data missing
@@ -31,7 +45,8 @@ Projects.schema = new SimpleSchema({
 
     department: {
         type: String,
-        allowedValues: ["Company", "RnD", "AE", "Support"]
+        allowedValues: Object.keys(Projects.Departments),
+        autoform: ApiCommon.AutoformHashPickerDef(Projects.Departments, { type: 'select-radio', template: 'buttonGroup' }),
     },
 
     priority: {
@@ -80,6 +95,7 @@ Projects.helpers({
 
     getEffort() {
         let effort = 0;
+        debugger;
         this.getActions().forEach((a) => {
             if (a.effort) effort += a.effort;
         });

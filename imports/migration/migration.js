@@ -26,7 +26,7 @@ export default Migration = {
         console.log(`migrating ${data.projects.length} projects...`);
 
         let actionIndex = 0;
-        data.projects.forEach(project => {
+        _.where(data.projects, { code: "AE009" }).forEach(project => {
             console.log('importing...', project.code, project.name, project.priority, project.start_date);
             if ( Projects.findOne({ code: project.code }) ) {
                 console.log('  > project already exists, skipping...');
@@ -39,7 +39,8 @@ export default Migration = {
                 code: project.code,
                 name: project.name,
                 priority: (p = project.priority) ? parseInt(p) : null,
-                startDate: _getDate(project.start_date)
+                startDate: _getDate(project.start_date),
+                department: project.code.substr(0,1)
 
             });
 
