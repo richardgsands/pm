@@ -133,9 +133,11 @@ function _getUserIdByInitials(initialsStr) {
         // todo: import email (look up from json file)
         // nb: profile is used in onCreateUser to add fields as top-level
         profile: { 
-            initials: initials 
+            initials: initials ,
             // todo: firstName (look up from json file)
             // todo: lastName (look up from json file)
+            // todo: departmemnt (look up from json file)
+            department: "AE"
         }
     });
     return userId;

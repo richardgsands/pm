@@ -2,6 +2,8 @@
 
     <h1 class="page-header">Overview</h1>
 
+    <a href="{{pathFor 'App.overview.user.loggedInUser'}}">My tasks</a> | <a href="{{pathFor 'App.overview.department' department=currentUser.department}}">My department</a>
+
     {{#if forLoggedInUser}}
     {{/if}}
 

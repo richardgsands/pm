@@ -47,11 +47,17 @@ publishComposite('project.code.joins', function(code) {
 });
 
 publishComposite('user.username.joins', function(username) {
+  return userJoins(() => Meteor.users.find({ username }));
+});
+
+publishComposite('user.department.joins', function(department) {
+  return userJoins(() => Meteor.users.find({ department }));
+});
+
+let userJoins = (findFunction) => {
+
   return {
-    find() {
-      // find user by username
-      return Meteor.users.find({ username });
-    },
+    find: findFunction,
     children: [   // nb: some subscriptions are handled automatically by Tabular
       {
         find(user) {
@@ -67,7 +73,8 @@ publishComposite('user.username.joins', function(username) {
       }
     ]
   }
-});
+
+}
 
 // tabular
 

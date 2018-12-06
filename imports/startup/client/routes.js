@@ -65,28 +65,39 @@ privateRoutes.route('/projects', {
   }
 });
 
+// overview
+
 privateRoutes.route('/overview', {
-  name: 'App.overview.loggedInUser',
+  name: 'App.overview.user.loggedInUser',
   action() {
-    FlowRouter.redirect(`/overview/${Meteor.user().username}`);
+    FlowRouter.redirect(`/overview/user/${Meteor.user().username}`);
   }
 });
 
-privateRoutes.route('/timesheet', {
-  name: 'App.timesheet.loggedInUser',
-  action() {
-    FlowRouter.redirect(`/timesheet/${Meteor.user().username}`);
-  }
-});
-
-privateRoutes.route('/overview/:username', {
-  name: 'App.overview',
+privateRoutes.route('/overview/user/:username', {
+  name: 'App.overview.user',
   action() {
     BlazeLayout.render('App_body', { main: 'App_overview' });
   }
 });
 
-privateRoutes.route('/timesheet/:username', {
+privateRoutes.route('/overview/department/:department', {
+  name: 'App.overview.department',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_overview' });
+  }
+});
+
+// timesheet
+
+privateRoutes.route('/timesheet', {
+  name: 'App.timesheet.user.loggedInUser',
+  action() {
+    FlowRouter.redirect(`/timesheet/user/${Meteor.user().username}`);
+  }
+});
+
+privateRoutes.route('/timesheet/user/:username', {
   name: 'App.timesheet',
   action() {
     BlazeLayout.render('App_body', { main: 'App_timesheet' });

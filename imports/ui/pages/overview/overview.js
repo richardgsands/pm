@@ -10,19 +10,36 @@ import './overview.html';
 
 Template.App_overview.onCreated(function() {
 
-    this.getUsername = () => FlowRouter.getParam('username');
-
     // subscriptions
     this.subscribe('projects.all');     // needed for insert form
-    this.autorun(() => {
-        this.subscribe('user.username.joins', this.getUsername())
-    });    
 
-    // nb: will not work until subscriptions ready
-    this.getUser = () => {
-        let user = Meteor.users.findOne({ username: this.getUsername() });
-        console.log(Template.instance().getUsername(), user && user._id);
-        return user;
+    if ( FlowRouter.getRouteName() === "App.overview.user" ) 
+    {
+        this.getUsername = () => FlowRouter.getParam('username');
+
+        this.autorun(() => {
+            this.subscribe('user.username.joins', this.getUsername())
+        });                
+
+        // nb: will not work until subscriptions ready
+        this.getUserIds = () => {
+            let user = Meteor.users.findOne({ username: this.getUsername() });
+            return user && [user._id];
+        }
+    }
+    else if ( FlowRouter.getRouteName() === "App.overview.department" ) 
+    {
+        this.getDepartment = () => FlowRouter.getParam('department');
+
+        this.autorun(() => {
+            this.subscribe('user.department.joins', this.getDepartment())
+        });                
+
+        // nb: will not work until subscriptions ready
+        this.getUserIds = () => {
+            let userIds = Meteor.users.find({ department: this.getDepartment() }).map((user) => user._id);
+            return userIds;
+        }        
     }
 
 });
@@ -34,55 +51,58 @@ Template.App_overview.onRendered(function() {
 Template.App_overview.helpers({
 
     actionsOverdue() {
-        return ProjectActions.find({'$or': [
+        let userIds = Template.instance().getUserIds();
+        if (!userIds) return;
+
+        return ProjectActions.find({$or: [
             {
-                ownerId: user._id,
-                status: { '$in': [ 'NS', 'IP' ] },
-                dueDate: { '$lt': moment().startOf('week').toDate() }
+                ownerId: { $in: userIds },
+                status: { $in: [ 'NS', 'IP' ] },
+                dueDate: { $lt: moment().startOf('week').toDate() }
             },
         ]});
     },
 
     actionsThisWeek() {
-        let user = Template.instance().getUser();
-        if (!user) return;
+        let userIds = Template.instance().getUserIds();
+        if (!userIds) return;
 
-        return ProjectActions.find({'$or': [
+        return ProjectActions.find({$or: [
             {
-                ownerId: user._id,
-                status: { '$in': [ 'NS', 'IP' ] },
+                ownerId: { $in: userIds },
+                status: { $in: [ 'NS', 'IP' ] },
                 dueDate: { 
-                    '$gte': moment().startOf('week').add(0,'d').toDate(),
-                    '$lt':  moment().startOf('week').add(7,'d').toDate() 
+                    $gte: moment().startOf('week').add(0,'d').toDate(),
+                    $lt:  moment().startOf('week').add(7,'d').toDate() 
                 }
             },
             {
-                ownerId: user._id,
-                status: { '$in': [ 'CO' ] },
-                completedDate: { '$gte': moment().startOf('week').add(0,'d').toDate() },
+                ownerId: { $in: userIds },
+                status: { $in: [ 'CO' ] },
+                completedDate: { $gte: moment().startOf('week').add(0,'d').toDate() },
             },
         ]});
     },
 
     actionsNextWeek() {
-        let user = Template.instance().getUser();
-        if (!user) return;
+        let userIds = Template.instance().getUserIds();
+        if (!userIds) return;
 
-        return ProjectActions.find({'$or': [
+        return ProjectActions.find({$or: [
             {
-                ownerId: user._id,
-                status: { '$in': [ 'NS', 'IP' ] },
+                ownerId: { $in: userIds },
+                status: { $in: [ 'NS', 'IP' ] },
                 dueDate: { 
-                    '$gte': moment().startOf('week').add(7, 'd').toDate(),
-                    '$lt':  moment().startOf('week').add(14,'d').toDate() 
+                    $gte: moment().startOf('week').add(7, 'd').toDate(),
+                    $lt:  moment().startOf('week').add(14,'d').toDate() 
                 }
             },
             {
-                ownerId: user._id,
-                status: { '$in': [ 'CO' ] },
+                ownerId: { $in: userIds },
+                status: { $in: [ 'CO' ] },
                 completedDate: { 
-                    '$gte': moment().startOf('week').add(7, 'd').toDate(),
-                    '$lt':  moment().startOf('week').add(14,'d').toDate() 
+                    $gte: moment().startOf('week').add(7, 'd').toDate(),
+                    $lt:  moment().startOf('week').add(14,'d').toDate() 
                 }
             },
         ]});
