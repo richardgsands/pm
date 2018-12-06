@@ -1,0 +1,29 @@
+<template name="App_overview">
+
+    <h1 class="page-header">Overview</h1>
+
+    {{#if forLoggedInUser}}
+    {{/if}}
+
+    {{#if actionsOverdue}}
+        <h2>Overdue</h2>
+        {{#each actionsOverdue}}
+        {{> project_action action=this}}
+        {{/each}}
+    {{/if}}
+
+    <h2>This week</h2>
+    {{#each actionsThisWeek}}
+    {{> project_action action=this}}
+    {{else}}
+    <p>No actions this week</p>
+    {{/each}}
+
+    <h2>Next week</h2>
+    {{#each actionsNextWeek}}
+    {{> project_action action=this}}
+    {{else}}
+    <p>No actions next week</p>
+    {{/each}}
+    
+</template>

@@ -14,22 +14,22 @@ export default Projects = new Mongo.Collection('projects');
 // enums
 
 Projects.Departments = {
-    "CP": "Company", 
-    "PM":"Product Management",
-    "RD": "Research and Development", 
-    "AE": "Application Engineerning", 
-    "SU": "Support", 
-    "MK": "Marketing",
-    "HR": "Human Resources", 
-    "IT": "Information Technology", 
-    "HS": "Health and Safety"
+    CP: "Company", 
+    PM: "Product Management",
+    RD: "Research and Development", 
+    AE: "Application Engineerning", 
+    SU: "Support", 
+    MK: "Marketing",
+    HR: "Human Resources", 
+    IT: "Information Technology", 
+    HS: "Health and Safety"
 }
 
 // TODO: remove the need for this
 Projects.MissingDataDefaults = {
-    // defaults to be use if data missing
-    DefaultStartDate: moment("1st Jan 2017"),
-    DefaultEndDate:   moment("31st Dec 2018")
+    // defaults to be used if data missing
+    DefaultStartDate: moment("2017-01-01"),
+    DefaultEndDate:   moment("2018-12-31")
 }
 
 Projects.schema = new SimpleSchema({
@@ -46,7 +46,7 @@ Projects.schema = new SimpleSchema({
     department: {
         type: String,
         allowedValues: Object.keys(Projects.Departments),
-        autoform: ApiCommon.AutoformHashPickerDef(Projects.Departments, { type: 'select-radio', template: 'buttonGroup' }),
+        // autoform: ApiCommon.AutoformHashPickerDef(Projects.Departments, { type: 'select-radio', template: 'buttonGroup' }),
     },
 
     priority: {
@@ -90,12 +90,13 @@ Projects.helpers({
     },
 
     getActions() {
-        return ProjectActions.find({ projectId: this._id }, { sort: { _order: 1 } });
+        // return ProjectActions.find({ projectId: this._id }, { sort: { _order: 1 } });    // for using sortable
+        return ProjectActions.find({ projectId: this._id }, { sort: { comGpletionDate: 1 } });       // sort by completion date, then milestone status
     },
 
     getEffort() {
         let effort = 0;
-        debugger;
+        // debugger;
         this.getActions().forEach((a) => {
             if (a.effort) effort += a.effort;
         });

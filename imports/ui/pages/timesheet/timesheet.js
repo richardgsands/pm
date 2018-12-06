@@ -8,13 +8,21 @@ import '/imports/ui/components/quickFormModal/quickFormModal.js';
 import './timesheet.html';
 
 Template.App_timesheet.onCreated(function() {
-    this.getUserId = () => FlowRouter.getParam('userId');
 
-    // subscriptions needed for insert form
-    this.subscribe('projects.all');
+    this.getUsername = () => FlowRouter.getParam('username');
+
+    // subscriptions
+    this.subscribe('projects.all');     // needed for insert form
     this.autorun(() => {
-        this.subscribe('timeentrys.user', this.getUserId());
-    });
+        this.subscribe('user.username.joins', this.getUsername())
+    });    
+
+    // nb: will not work until subscriptions ready
+    this.getUser = () => {
+        let user = Meteor.users.findOne({ username: this.getUsername() });
+        console.log(Template.instance().getUsername(), user && user._id);
+        return user;
+    }
 
     this.state = {
         lastProjectId: new ReactiveVar(null),
@@ -40,6 +48,7 @@ Template.App_timesheet.onCreated(function() {
             $(this).closest('.js-autoform-input-container').next().find('input').focus().select();     
         });
     }
+
 });
 
 Template.App_timesheet.onRendered(function() {
@@ -54,16 +63,20 @@ Template.App_timesheet.helpers({
 
     forLoggedInUser() {
         FlowRouter.watchPathChange();
-        return FlowRouter.getParam('userId') === Meteor.userId();
+        return FlowRouter.getParam('username') === ( Meteor.user() && Meteor.user().username );
     },
 
     defaultValues() {
         let hoursForDate = 0;
-        TimeEntrys.find({ userId: Template.instance().getUserId() }).forEach((te) => {
+        let user = Template.instance().getUser();
+
+        if (!user) return;
+
+        TimeEntrys.find({ userId: user._id }).forEach((te) => {
             hoursForDate += te.hours;
         });
         return {
-            userId: Template.instance().getUserId(),
+            userId: user._id,
             projectId: Template.instance().state.lastProjectId.get(),
             date: Template.instance().state.lastDate.get(),
             hours: Math.max(7.5-hoursForDate, 0)
@@ -71,7 +84,8 @@ Template.App_timesheet.helpers({
     },
 
     tableSelector() {
-        return { userId: Template.instance().getUserId() };
+        let user = Template.instance().getUser();
+        return user && { userId: user._id };
     }
 
 });

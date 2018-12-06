@@ -31,7 +31,7 @@ aldeed:autoform
 aldeed:collection2-core
 aldeed:tabular
 peppelg:bootstrap-3-modal
-insecure
+insecure                        # TODO remove
 aldeed:schema-index
 dburles:collection-helpers
 aldeed:autoform-bs-datepicker
@@ -49,3 +49,6 @@ dhtmlx:gantt
 konecty:mongo-counter
 rubaxa:sortable
 check                       # NB: required for rubaxa:sortable
+meteorich:autogrid
+viloma:user-feedback
+session

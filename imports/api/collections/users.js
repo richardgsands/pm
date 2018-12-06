@@ -2,25 +2,32 @@
 
 // Meteor.users is automatically created by accounts package
 
+// make initials unique
+// Meteor.users._ensureIndex({initials: 1}, {unique: 1});       TODO: get this to work
+
 Meteor.users.helpers({
 
     displayName() {
-        if ( this.profile && this.profile.firstName && this.profile.lastName ) 
-            if (this.profile.initials)
-                return `${this.profile.initials} (${this.profile.firstName} ${this.profile.lastName})` 
+        if ( this.firstName && this.lastName ) 
+            if (this.initials)
+                return `${this.initials} (${this.firstName} ${this.lastName})` 
             else
-                return `${this.profile.firstName} ${this.profile.lastName}`;
-        else if ( this.profile && this.profile.initials )
-            return `${this.profile.initials}`;
+                return `${this.firstName} ${this.lastName}`;
+        else if ( this.initials )
+            return `${this.initials}`;
         else
             return `(No name: ${this._id})`;
     },
 
     displayInitials() {
-        if ( this.profile && this.profile.initials )
-            return `${this.profile.initials}`;
+        if ( this.initials )
+            return `${this.initials}`;
         else
             return `(No initials)`;
     }
 
 })
+
+Meteor.users.findUserByInitials = (initials) => Meteor.users.findOne({ initials });
+Meteor.users.findUserByUsername = (username) => Meteor.users.findOne({ username });
+

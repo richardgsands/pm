@@ -6,6 +6,7 @@ import '../../ui/layouts/body/body.js';
 import '../../ui/pages/home/home.js';
 import '../../ui/pages/not-found/not-found.js';
 import '../../ui/pages/timesheet/timesheet';
+import '../../ui/pages/overview/overview';
 import '../../ui/pages/projects/projects.js';
 import '../../ui/pages/project/project.js';
 import '../../ui/components/project/project_tor.js';
@@ -64,14 +65,28 @@ privateRoutes.route('/projects', {
   }
 });
 
-privateRoutes.route('/timesheet', {
-  name: 'App.timesheet.loggedInUser',
+privateRoutes.route('/overview', {
+  name: 'App.overview.loggedInUser',
   action() {
-    FlowRouter.redirect(`/timesheet/${Meteor.userId()}`);
+    FlowRouter.redirect(`/overview/${Meteor.user().username}`);
   }
 });
 
-privateRoutes.route('/timesheet/:userId', {
+privateRoutes.route('/timesheet', {
+  name: 'App.timesheet.loggedInUser',
+  action() {
+    FlowRouter.redirect(`/timesheet/${Meteor.user().username}`);
+  }
+});
+
+privateRoutes.route('/overview/:username', {
+  name: 'App.overview',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_overview' });
+  }
+});
+
+privateRoutes.route('/timesheet/:username', {
   name: 'App.timesheet',
   action() {
     BlazeLayout.render('App_body', { main: 'App_timesheet' });

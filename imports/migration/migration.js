@@ -26,7 +26,9 @@ export default Migration = {
         console.log(`migrating ${data.projects.length} projects...`);
 
         let actionIndex = 0;
-        _.where(data.projects, { code: "AE009" }).forEach(project => {
+        data.projects
+        // _.where(data.projects, {})
+        .forEach(project => {
             console.log('importing...', project.code, project.name, project.priority, project.start_date);
             if ( Projects.findOne({ code: project.code }) ) {
                 console.log('  > project already exists, skipping...');
@@ -40,7 +42,7 @@ export default Migration = {
                 name: project.name,
                 priority: (p = project.priority) ? parseInt(p) : null,
                 startDate: _getDate(project.start_date),
-                department: project.code.substr(0,1)
+                department: project.code.substr(0,2)
 
             });
 
@@ -101,22 +103,37 @@ function _getDate(dateStr) {
     return moment(dateStr, 'YYYY-MM-DD').toDate()
 }
 
-function _getUserIdByInitials(initials) {
-    if (!initials) return null;
-    console.log('initials', initials);
+function _getUserIdByInitials(initialsStr) {
+    if (!initialsStr) return null;
+
+    // pick first user if multiple are listed
+
+    if      (_.contains(initialsStr, "/")) initials = initialsStr.split("/")[0];
+    else if (_.contains(initialsStr, ",")) initials = initialsStr.split(",")[0];
+    else    initials = initialsStr
+
+    // sanitise capitalisation
+    initials = _.reduce(_.clone(initials), (result, elem, index)  => {
+        return result += (index<2) ? elem.toUpperCase() : elem.toLowerCase();
+    }, "");
+
+    console.log('initials', initials, initialsStr);
     
     // returns userId for mongo query (creating user if necessary)
-    let user = Meteor.users.findOne({'profile.initials': initials});
+    let user = Meteor.users.findOne({ initials });
 
     if (user) 
         return user._id;
 
     // no user found, need to create
+    console.log("creating user", initials);
     let userId = Accounts.createUser({
         username: initials,
-        // todo: email instead of username (look up from json file)
-        profile:{
-            initials: initials
+        // todo: import username like rsands, etc (look up from json file)
+        // todo: import email (look up from json file)
+        // nb: profile is used in onCreateUser to add fields as top-level
+        profile: { 
+            initials: initials 
             // todo: firstName (look up from json file)
             // todo: lastName (look up from json file)
         }

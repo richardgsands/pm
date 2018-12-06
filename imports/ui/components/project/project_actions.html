@@ -1,9 +1,13 @@
 <template name="project_actions">
 
+    {{#unless Template.subscriptionsReady}}{{> spinner}}{{/unless}}
+
     <div>
-    {{#sortable items=projectActions sortField="_order"}}
-        {{> project_action action=this}}
-    {{/sortable}}
+    <!-- {{#sortable items=projectActions sortField="_order"}} -->
+    {{#each projectActions}}
+    {{> project_action action=this}}
+    {{/each}}
+    <!-- {{/sortable}} -->
     </div>
 
     <div class="panel panel-default">

@@ -1,10 +1,11 @@
 <template name="project_action">
-    <div class="panel {{#if ($eq action.status 'CO')}}panel-success{{else if ($eq action.status 'IP')}}panel-info{{else}}panel-default{{/if}} js-action" data-project-id="{{action._id}}">
+    <div class="panel panel-small-margin {{#if ($eq action.status 'CO')}}panel-success{{else if ($eq action.status 'IP')}}panel-info{{else}}panel-default{{/if}} {{#if action.milestone}}milestone{{/if}} js-action" data-project-id="{{action._id}}">
 
         <div class="panel-heading collapsed" data-toggle="collapse" href="#collapse_{{action._id}}" role="button" aria-expanded="false" aria-controls="collapse_{{action._id}}">
             <div class="row">
                 <div class="col-md-2">
                     <div class="label {{#if ($eq action.status 'CO')}}label-success{{else if ($eq action.status 'IP')}}label-primary{{else}}label-default{{/if}}">
+                        <!-- ({{ action._order  }}) -->
                         {{ renderStatus action.status }}
                     </div>
                 </div>
@@ -15,12 +16,16 @@
                     {{#if action.effort}}{{action.effort}} days{{/if}}
                 </div>
                 <div class="col-md-2">
-                    {{#if action.completedDate}}
-                    Completed: {{displayDate action.completedDate}}
+                    {{#if ($eq action.status 'CO')}}
+                        {{#if action.completedDate}}
+                        Completed: {{displayDate action.completedDate}}
+                        {{else}}
+                        Completed: (enter date)
+                        {{/if}}
                     {{else if action.dueDate}}
-                    Due: {{displayDate action.dueDate}}
+                        Due: {{displayDate action.dueDate}}
                     {{else}}
-                    Due:
+                        Due: (enter date)
                     {{/if}}
                 </div>
         
@@ -28,6 +33,7 @@
         </div>
         <div class="panel-body collapse action" id="collapse_{{action._id}}" role="tabpanel" aria-labelledby="collapse_{{action._id}}">
             {{> quickForm collection=ProjectActions type='update' id=action._id doc=action}}
+            {{> quickRemoveButton collection=ProjectActions _id=action._id class="btn btn-danger"}}
         </div>
 
     </div>

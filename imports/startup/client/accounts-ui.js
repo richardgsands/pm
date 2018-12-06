@@ -42,4 +42,3 @@ Accounts.ui.config({
         }            
     }]
 });
-

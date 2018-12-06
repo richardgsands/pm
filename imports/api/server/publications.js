@@ -23,6 +23,12 @@ Meteor.publish('timeentrys.user', function (userId) {
   return TimeEntrys.find({ userId });
 });
 
+Meteor.publish('projectActions.user', function (userId) {
+  return ProjectActions.find({ ownerId: userId });
+});
+
+// composites
+
 publishComposite('project.code.joins', function(code) {
   return {
     find() {
@@ -40,13 +46,65 @@ publishComposite('project.code.joins', function(code) {
   }
 });
 
+publishComposite('user.username.joins', function(username) {
+  return {
+    find() {
+      // find user by username
+      return Meteor.users.find({ username });
+    },
+    children: [   // nb: some subscriptions are handled automatically by Tabular
+      {
+        find(user) {
+          // find all timeentrys for user
+          return TimeEntrys.find({ userId: user._id });
+        }
+      },
+      {
+        find(user) {
+          // find all project actions for user
+          return ProjectActions.find({ ownerId: user._id });
+        }
+      }
+    ]
+  }
+});
+
 // tabular
 
 publishComposite("tabular_Projects", function (tableName, ids, fields) {
   return {
     find() {
       // find project by code
-      return Projects.find({_id: {$in: ["test"]}});
+      console.log(tableName, ids, fields);
+      return Projects.find({_id: {$in: ids}});
+    },
+    children: [   // nb: some subscriptions are handled automatically by Tabular
+      {
+        find(project) {
+          // find all timeentrys for project
+          return TimeEntrys.find({ projectId: project._id });
+        }
+      },
+      {
+        find(project) {
+          // find all timeentrys for project
+          return ProjectActions.find({ projectId: project._id });
+        }
+      },
+      {
+        find(project) {
+          return Meteor.users.find();   // TODO filter
+        }
+      }
+    ]
+  }
+});
+
+publishComposite("tabular_TimeEntrys", function (tableName, ids, fields) {
+  return {
+    find() {
+      // find project by code
+      return Projects.find({_id: {$in: ids}});
     },
     children: [   // nb: some subscriptions are handled automatically by Tabular
       {

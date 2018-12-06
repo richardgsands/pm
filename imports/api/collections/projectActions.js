@@ -85,8 +85,17 @@ ProjectActions.schema = new SimpleSchema({
     },
 
     _order: {
+        // ref: https://forums.meteor.com/t/auto-increment-value-in-a-simpleschema/43644
+        // TODO: make this an atomic DB function, maybe https://atmospherejs.com/konecty/mongo-counter ?
         type: Number,
-        autoform: { type: 'hidden' }
+        autoform: { type: 'hidden' },
+        autoValue: function() {
+            let projectId = this.siblingField('projectId') && this.siblingField('projectId').value;
+            if ( this.isInsert && projectId ) {
+                let count = ProjectActions.find({ projectId }).count();
+                return ++count;
+            }
+        }
     }
 
 });

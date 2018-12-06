@@ -5,6 +5,7 @@ import moment from 'moment';
 new Tabular.Table({
   name: "TimeEntrys",
   collection: TimeEntrys,
+  pub: "tabular_TimeEntrys",
   columns: [
     {data: "getProject().code", title: "Project Code"},
     {
