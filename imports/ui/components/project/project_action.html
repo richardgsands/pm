@@ -12,23 +12,24 @@
                 <div class="col-md-7">
                     {{action.description}}
                 </div>
-                <div class="col-md-1">
-                    {{#if action.effort}}{{action.effort}} days{{/if}}
-                </div>
-                <div class="col-md-2">
-                    {{#if ($eq action.status 'CO')}}
-                        {{#if action.completedDate}}
-                        Completed: {{displayDate action.completedDate}}
+                <div class="col-md-3 row">
+                    <div class="col-xs-4">
+                        {{#if action.effort}}{{action.effort}} days{{/if}}
+                    </div>
+                    <div class="col-xs-8">
+                        {{#if ($eq action.status 'CO')}}
+                            {{#if action.completedDate}}
+                            Completed: {{displayDate action.completedDate}}
+                            {{else}}
+                            Completed: (enter date)
+                            {{/if}}
+                        {{else if action.dueDate}}
+                            Due: {{displayDate action.dueDate}}
                         {{else}}
-                        Completed: (enter date)
+                            Due: (enter date)
                         {{/if}}
-                    {{else if action.dueDate}}
-                        Due: {{displayDate action.dueDate}}
-                    {{else}}
-                        Due: (enter date)
-                    {{/if}}
+                    </div>    
                 </div>
-        
             </div>
         </div>
         <div class="panel-body collapse action" id="collapse_{{action._id}}" role="tabpanel" aria-labelledby="collapse_{{action._id}}">
