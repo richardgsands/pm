@@ -7,6 +7,42 @@
     {{#if forLoggedInUser}}
     {{/if}}
 
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Project</th>
+            <th scope="col">Overdue</th>
+            <th scope="col">This week</th>
+            <th scope="col">Next week</th>
+          </tr>
+        </thead>
+        <tbody>
+
+            {{#each projectsWithWeeklySummary}}
+            <tr>
+                <td>
+                    <p>{{this.code}}</p>
+                    <p>{{this.name}}</p>
+                </td>
+                <td>
+                    {{#each this.actionsOverdue}}{{> App_overview__project_action_text this}}{{/each}}
+                </td>
+                <td>
+                    {{#each this.actionsNextWeek}}{{> App_overview__project_action_text this}}{{/each}}
+                </td>
+                <td>
+                    {{#each this.actionsThisWeek}}{{> App_overview__project_action_text this}}{{/each}}
+                </td>
+            </tr>
+            {{/each}}
+
+        </tbody>
+      </table>
+
+
+
+
+
     {{#if actionsOverdue}}
         <h2>Overdue</h2>
         {{#each actionsOverdue}}
@@ -28,4 +64,8 @@
     <p>No actions next week</p>
     {{/each}}
     
+</template>
+
+<template name="App_overview__project_action_text">
+    <p>({{this.status}}) {{this.description}}</p>
 </template>

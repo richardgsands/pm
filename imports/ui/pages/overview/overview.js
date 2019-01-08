@@ -50,63 +50,60 @@ Template.App_overview.onRendered(function() {
 
 Template.App_overview.helpers({
 
-    actionsOverdue() {
-        let userIds = Template.instance().getUserIds();
-        if (!userIds) return;
+    projectsWithWeeklySummary() {
+        let actionsOverdue = getActionsOverdue();        
+        let actionsThisWeek = getActionsThisWeek();
+        let actionsNextWeek = getActionsNextWeek();
 
-        return ProjectActions.find({$or: [
-            {
-                ownerId: { $in: userIds },
-                status: { $in: [ 'NS', 'IP' ] },
-                dueDate: { $lt: moment().startOf('week').toDate() }
-            },
-        ]});
+        // get unique list of project ids
+        let projectIdsSet = {}
+        actionsOverdue.forEach((a) => { (projectIdsSet[a.projectId]) = true });
+        actionsThisWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
+        actionsNextWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
+
+        // get unique list of projects (sorted by code)
+        let projects = Projects.find({ 
+            _id: { $in: _.keys(projectIdsSet) } 
+        }, {
+            sort: { code: -1 }
+        }).fetch();
+
+        // set overdue, this week and next week tasks on projects (array)
+        projects.forEach((p) => {
+            p.actionsOverdue =  _.where(actionsOverdue.fetch(), { projectId: p._id });
+            p.actionsThisWeek =  _.where(actionsThisWeek.fetch(), { projectId: p._id });
+            p.actionsNextWeek =  _.where(actionsNextWeek.fetch(), { projectId: p._id });
+        });
+
+        return projects;
     },
 
-    actionsThisWeek() {
-        let userIds = Template.instance().getUserIds();
-        if (!userIds) return;
+    weeklySummaryWithProjects() {
+        let actionsOverdue = getActionsOverdue();        
+        let actionsThisWeek = getActionsThisWeek();
+        let actionsNextWeek = getActionsNextWeek();
 
-        return ProjectActions.find({$or: [
-            {
-                ownerId: { $in: userIds },
-                status: { $in: [ 'NS', 'IP' ] },
-                dueDate: { 
-                    $gte: moment().startOf('week').add(0,'d').toDate(),
-                    $lt:  moment().startOf('week').add(7,'d').toDate() 
-                }
-            },
-            {
-                ownerId: { $in: userIds },
-                status: { $in: [ 'CO' ] },
-                completedDate: { $gte: moment().startOf('week').add(0,'d').toDate() },
-            },
-        ]});
-    },
+        // get unique list of project ids
+        let projectIdsSet = {}
+        actionsOverdue.forEach((a) => { (projectIdsSet[a.projectId]) = true });
+        actionsThisWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
+        actionsNextWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
 
-    actionsNextWeek() {
-        let userIds = Template.instance().getUserIds();
-        if (!userIds) return;
+        // get unique list of projects (sorted by code)
+        let projects = Projects.find({ 
+            _id: { $in: _.keys(projectIdsSet) } 
+        }, {
+            sort: { code: -1 }
+        }).fetch();
 
-        return ProjectActions.find({$or: [
-            {
-                ownerId: { $in: userIds },
-                status: { $in: [ 'NS', 'IP' ] },
-                dueDate: { 
-                    $gte: moment().startOf('week').add(7, 'd').toDate(),
-                    $lt:  moment().startOf('week').add(14,'d').toDate() 
-                }
-            },
-            {
-                ownerId: { $in: userIds },
-                status: { $in: [ 'CO' ] },
-                completedDate: { 
-                    $gte: moment().startOf('week').add(7, 'd').toDate(),
-                    $lt:  moment().startOf('week').add(14,'d').toDate() 
-                }
-            },
-        ]});
-        
+        // set overdue, this week and next week tasks on projects (array)
+        projects.forEach((p) => {
+            p.actionsOverdue =  _.where(actionsOverdue.fetch(), { projectId: p._id });
+            p.actionsThisWeek =  _.where(actionsThisWeek.fetch(), { projectId: p._id });
+            p.actionsNextWeek =  _.where(actionsNextWeek.fetch(), { projectId: p._id });
+        });
+
+        return projects;        
     },
 
     forLoggedInUser() {
@@ -120,3 +117,61 @@ Template.App_overview.events({
 
 });
 
+let getActionsOverdue = () => {
+    let userIds = Template.instance().getUserIds();
+    if (!userIds) return;
+
+    return ProjectActions.find({$or: [
+        {
+            ownerId: { $in: userIds },
+            status: { $in: [ 'NS', 'IP' ] },
+            dueDate: { $lt: moment().startOf('week').toDate() }
+        },
+    ]});
+}
+
+let getActionsThisWeek = () => {
+    let userIds = Template.instance().getUserIds();
+    if (!userIds) return;
+
+    return ProjectActions.find({$or: [
+        {
+            ownerId: { $in: userIds },
+            status: { $in: [ 'NS', 'IP' ] },
+            dueDate: { 
+                $gte: moment().startOf('week').add(0,'d').toDate(),
+                $lt:  moment().startOf('week').add(7,'d').toDate() 
+            }
+        },
+        {
+            ownerId: { $in: userIds },
+            status: { $in: [ 'CO' ] },
+            completedDate: { $gte: moment().startOf('week').add(0,'d').toDate() },
+        },
+    ]});
+}
+
+let getActionsNextWeek = () => {
+    let userIds = Template.instance().getUserIds();
+    if (!userIds) return;
+
+    return ProjectActions.find({$or: [
+        {
+            ownerId: { $in: userIds },
+            status: { $in: [ 'NS', 'IP' ] },
+            dueDate: { 
+                $gte: moment().startOf('week').add(7, 'd').toDate(),
+                $lt:  moment().startOf('week').add(14,'d').toDate() 
+            }
+        },
+        {
+            ownerId: { $in: userIds },
+            status: { $in: [ 'CO' ] },
+            completedDate: { 
+                $gte: moment().startOf('week').add(7, 'd').toDate(),
+                $lt:  moment().startOf('week').add(14,'d').toDate() 
+            }
+        },
+    ]});
+    
+}

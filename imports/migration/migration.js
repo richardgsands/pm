@@ -29,22 +29,32 @@ export default Migration = {
         data.projects
         // _.where(data.projects, {})
         .forEach(project => {
+            // if (!project.name) {
+            //     console.log('skipping project with no name...', project.code, project.name, project.priority, project.start_date);    
+            //     return;
+            // }
+
             console.log('importing...', project.code, project.name, project.priority, project.start_date);
+
             if ( Projects.findOne({ code: project.code }) ) {
                 console.log('  > project already exists, skipping...');
+                return
             };
 
             // create project
 
-            projectId = Projects.insert({
-
-                code: project.code,
-                name: project.name,
-                priority: (p = project.priority) ? parseInt(p) : null,
-                startDate: _getDate(project.start_date),
-                department: project.code.substr(0,2)
-
-            });
+            try {
+                projectId = Projects.insert({
+                    code: project.code,
+                    name: project.name,
+                    priority: (p = project.priority) ? parseInt(p) : null,
+                    startDate: _getDate(project.start_date),
+                    department: project.code.substr(0,2)
+                });                    
+            } catch(e) {
+                console.log('error adding project...', project.code, project.name, project.priority, project.start_date);    
+                return;
+            }
 
             // create project milestones
 

@@ -52,7 +52,7 @@ Projects.schema = new SimpleSchema({
     priority: {
         type: SimpleSchema.Integer,
         allowedValues: [0, 1, 2, 3],
-        optional: true
+        optional: true,
     },
 
     startDate: {            // actual date of initiation gate
@@ -72,7 +72,15 @@ Projects.schema = new SimpleSchema({
         autoform: ApiCommon.AutoformUserPickerDef(),
         optional: true,
         label: 'Project Manager'
-    }
+    },
+
+    projectBoardIds: {
+        type: Array,
+        autoform: ApiCommon.AutoformUserPickerDef({multiple: true}),
+        optional: true,
+        label: 'Project Board'
+    },
+    'projectBoardIds.$': { type: String, optional: true },
 
 });
 
@@ -111,7 +119,7 @@ Projects.helpers({
         // otherwise determine from actions (for project)
         let startDate = 0;
         this.getActions().forEach((a) => {
-            startDate = min(startDate, (a.startDate||0))      // use actual inputted value here (rather than aggregated value defined in action helpers)
+            startDate = Math.min(startDate, (a.startDate||0))      // use actual inputted value here (rather than aggregated value defined in action helpers)
         });
         
         // if we have found a start date, use that
@@ -120,6 +128,10 @@ Projects.helpers({
 
         // otherwise use default
         return Projects.MissingDataDefaults.DefaultStartDate;
+    },
+
+    getStartDateHuman() {
+        return moment(this.getStartDate()).format("MMM-YY");
     },
 
     getEndDate() {

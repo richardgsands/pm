@@ -1,0 +1,9 @@
+<template name="autoFormInput">
+    {{#if editing}}
+        {{#autoForm collection="Projects" id=autoformId type="update" doc=doc}}
+            {{ > afFieldInput name=data }}
+        {{/autoForm}}
+    {{else}}
+        {{displayValue}}
+    {{/if}}
+</template>

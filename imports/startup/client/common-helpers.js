@@ -35,3 +35,7 @@ Template.registerHelper('$concat', (a, b) => {
 Template.registerHelper('isActive', (a, b) => {
   return (a === b) ? " active" : null;
 });
+
+Template.registerHelper('getProp', (object, prop) => {
+    return object[prop];
+});

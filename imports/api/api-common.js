@@ -1,5 +1,5 @@
 export default ApiCommon = {
-    
+
     AutoformHashPickerDef(object, options) {
         options = options || {};
 
@@ -48,7 +48,9 @@ export default ApiCommon = {
         };
     },
     
-    AutoformUserPickerDef() {
+    AutoformUserPickerDef(options) {
+        options = options || {};
+
         return {
             type: 'select2',
             options: function() {
@@ -57,9 +59,27 @@ export default ApiCommon = {
                 });
             },
             select2Options: {
-                width: '50%'
+                width: '50%',
+                multiple: options.multiple
             }
         };
+    },
+
+    TabularGetColumn(data, title, helper) {
+        let column = { data, title };
+
+        if (Meteor.isClient) {
+            column.tmpl = Meteor.isClient && Template.autoFormInput
+            column.tmplContext = (rowData) => {
+                return {
+                    doc: rowData,
+                    data: data,               // i.e. doc property
+                    helper: helper || null    // optional helper to use instead of doc property
+                }
+            }
+        }
+
+        return column;
     }
 
 } 

@@ -82,8 +82,8 @@ publishComposite("tabular_Projects", function (tableName, ids, fields) {
   return {
     find() {
       // find project by code
-      console.log(tableName, ids, fields);
-      return Projects.find({_id: {$in: ids}});
+      // console.log(tableName, ids, fields);
+      return Projects.find({ _id: { $in: ids }});
     },
     children: [   // nb: some subscriptions are handled automatically by Tabular
       {
