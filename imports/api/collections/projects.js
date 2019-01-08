@@ -82,6 +82,20 @@ Projects.schema = new SimpleSchema({
     },
     'projectBoardIds.$': { type: String, optional: true },
 
+    ratingCoreContext: {
+        type: SimpleSchema.Integer,
+        min: -4,
+        max: 4,
+        optional: true,
+    },
+
+    ratingMissionCritical: {
+        type: SimpleSchema.Integer,
+        min: -4,
+        max: 4,
+        optional: true,
+    }
+    
 });
 
 Projects.attachSchema(Projects.schema);
