@@ -1,0 +1,19 @@
+<template name="afFormGroup_bs3horiz_hint">
+    <div class="form-group {{#if afFieldIsInvalid name=this.name}}has-error{{/if}} {{afFormGroupClass}}" data-required={{required}} {{afFormGroupAtts}}>
+      {{#if skipLabel}}
+      {{! We include the empty label as the easiest way to keep proper field alignment}}
+      <label {{afFieldLabelAtts}}></label>
+      {{else}}
+      <label {{afFieldLabelAtts}}>{{#if this.labelText}}{{this.labelText}}{{else}}{{afFieldLabelText name=this.name}}{{/if}}</label>
+      {{/if}}
+
+      {{#with afHintTop this}}
+      <small class="afhint-top-block text-muted">{{this}}</small>
+      {{/with}}
+      
+      <div class="{{rightColumnClass}}">
+        {{> afFieldInput afFieldInputAtts}}
+        <span class="help-block">{{{afFieldMessage name=this.name}}}</span>
+      </div>
+    </div>
+  </template>
