@@ -34,13 +34,29 @@ Projects.MissingDataDefaults = {
 
 Projects.schema = new SimpleSchema({
 
+    starred: {
+        type: Boolean,
+        defaultValue: false
+    },
+
+    parentId: {
+        type: String,
+        autoform: ApiCommon.AutoformProjectPickerDef({
+            label: 'Parent project'
+        }),
+        optional: true
+    },
+    
     code: {
         type: String,
         unique: true
     },
 
     name: {
-        type: String
+        type: String,
+        autoform: {
+            hint: "Test"
+        }
     },
 
     department: {
@@ -57,7 +73,9 @@ Projects.schema = new SimpleSchema({
 
     startDate: {            // actual date of initiation gate
         type: Date,
-        autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef({
+            hint: "Actual date of initiation gate"
+        }),
         optional: true
     },
 
@@ -94,8 +112,14 @@ Projects.schema = new SimpleSchema({
         min: -4,
         max: 4,
         optional: true,
+    },
+
+    _cached: {
+        type: Object,
+        optional: true,
+        blackbox: true
     }
-    
+
 });
 
 Projects.attachSchema(Projects.schema);
@@ -114,6 +138,26 @@ Projects.helpers({
     getActions() {
         // return ProjectActions.find({ projectId: this._id }, { sort: { _order: 1 } });    // for using sortable
         return ProjectActions.find({ projectId: this._id }, { sort: { comGpletionDate: 1 } });       // sort by completion date, then milestone status
+    },
+
+    getParent() {
+        return this.parentId && Projects.findOne(this.parentId);
+    },
+
+    getChildren() {
+        return Projects.find({ parentId: this._id });
+    },
+
+    getRelatedProjects() {
+        let relatedProjects = [];
+        if ( parent = this.getParent() ) 
+            relatedProjects.push(parent)
+        
+        this.getChildren().forEach((child) => {
+            relatedProjects.push(child);
+        });
+        
+        return relatedProjects;
     },
 
     getEffort() {
@@ -241,6 +285,56 @@ Projects.helpers({
 
         return hoursSummary;
 
+    },
+    
+    getFamilyAsArray() {
+        // return family tree, including this project
+
+        let family = [];
+
+        function recurse(project) {
+            family.push(project);
+            project.getChildren().forEach((child) => {
+                recurse(child);
+            });
+        }
+        recurse(this);
+
+    },
+
+    getDescendentsAsArray() {
+        return _.filter(getFamilyAsArray(), (p) => { return p._id != this._id });;
     }
 
 });
+
+if (Meteor.server) {
+
+    Projects.updateCachedValuesForProject = function(project) {
+
+        // update project effort values
+        Projects.update(project._id, {
+            $set: { '_cached.effort': project.getEffort() }
+        });
+
+        // update parents
+        if (project.parentId) {
+            Projects.update(project.parentId, {
+                // $set: { 'cached.effort':  }
+            })
+
+        }
+    
+    
+    
+        project.getChildren().forEach((child) => {
+    
+    
+    
+            Projects.updateCachedValuesForProject(child)
+        })
+    
+    }
+
+}
+

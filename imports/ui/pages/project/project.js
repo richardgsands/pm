@@ -18,6 +18,8 @@ Template.App_project.onCreated(function() {
             }
         }
     });
+    this.subscribe('projects.all');     // needed for parent projects, etc
+
 
     // set up sub naviation
     this.navStates = [

@@ -26,18 +26,22 @@ export default ApiCommon = {
         }, options);
     },
 
-    AutoformBootstrapDatepickerDef() {
-        return {
+    AutoformBootstrapDatepickerDef(options) {
+        options = options || {};
+
+        return _.extend({
             type: "bootstrap-datepicker",
             datePickerOptions: {
                 autoclose: true,
                 format: "dd/mm/yyyy"
             }
-        };
+        }, options);
     },
 
-    AutoformProjectPickerDef() {
-        return {
+    AutoformProjectPickerDef(options) {
+        options = options || {};
+
+        return _.extend({
             label: "Project Code",
             type: 'select2',
             options: function() {
@@ -45,7 +49,7 @@ export default ApiCommon = {
                     return { label: `${project.code} (${project.name})`, value: project._id };
                 });
             }
-        };
+        }, options);
     },
     
     AutoformUserPickerDef(options) {

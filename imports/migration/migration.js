@@ -18,7 +18,8 @@ export default Migration = {
         console.log('All projects removed.');
     },
 
-    importJSON(filename) {
+    // import from OPMS export
+    importOPMS(filename) {
 
         // TODO:try/catch to remove project if error occurs?
 
@@ -104,6 +105,61 @@ export default Migration = {
 
         });
 
+    },
+
+    // import native format
+    import(filename) {
+        let data = JSON.parse( Assets.getText(`migration/${filename}`) );
+
+        console.log(`importing ${data.projects.length} projects...`);
+        data.projects
+        .forEach(project => {
+
+            // NB: collection2 interferes with upsert, so doing it manually...
+
+            if ( Projects.findOne({code: project.code}) ) {
+                // project exists
+                try {
+                    Projects.update({
+                        code: project.code
+                    }, {
+                        $set: project
+                    });
+                        
+                } catch(e) {
+                    console.log('error updating project...', project.code, project.name);    
+                    return;
+                }    
+            } else {
+                // project does not exist
+                try {
+                    Projects.insert(project);
+                } catch(e) {
+                    console.log('error inserting project...', project.code, project.name);    
+                    return;
+                }    
+            }
+
+        });
+
+        console.log(`importing ${data.parents.length} parents...`);
+        data.parents
+        .forEach(parent => {
+
+            let parentId;
+            try {
+                parentId = Projects.findOne({code: parent.parent})._id;
+                Projects.update({
+                    code: parent.code
+                }, {
+                    $set: { parentId }
+                });
+            } catch(e) {
+                console.log('error setting parent...', parent, parentId);
+                return;
+            }    
+
+        });
     }
 
 }
@@ -174,3 +230,4 @@ function _safetyCheck(checkStr) {
     }
     return true;
 }
+
