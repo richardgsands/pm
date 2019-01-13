@@ -1,0 +1,14 @@
+<template name="relatedProjects">
+
+    {{#if relatedProjects}}
+    <div class="well">
+        <h4>Related projects</h4>
+        {{#each relatedProjects}}
+            <a href="{{pathFor 'App.project.code' code=this.code}}" data-toggle="tooltip" title="{{this.name}}">
+                <span class="label label-default">{{this.code}}</span>
+            </a>
+        {{/each}}
+    </div>
+    {{/if}}
+
+</template>

@@ -8,16 +8,7 @@
                 <h2>{{name}}</h2>
             </div>
 
-            {{#if getRelatedProjects}}
-            <div class="well">
-                <h4>Related projects</h4>
-                {{#each getRelatedProjects}}
-                    <a href="{{pathFor 'App.project.code' code=this.code}}">
-                        <span class="label label-default">{{this.code}}</span>
-                    </a>
-                {{/each}}
-            </div>
-            {{/if}}
+            {{> relatedProjects relatedProjects=getRelatedProjects }}
 
         {{else}}
             <h1 class="page-header">New project</h1>

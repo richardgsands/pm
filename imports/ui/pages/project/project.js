@@ -1,5 +1,7 @@
-import './project.html';
+import '/imports/ui/components/project/relatedProjects.js'
 import Projects from '/imports/api/collections/projects.js';
+
+import './project.html';
 
 Template.App_project.onCreated(function() {
 

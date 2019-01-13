@@ -1,9 +1,22 @@
 <template name="autoFormInput">
-    {{#if editing}}
-        {{#autoForm collection="Projects" id=autoformId type="update" doc=doc}}
-            {{ > afFieldInput name=data }}
-        {{/autoForm}}
+
+    {{#if ($eq data 'code')}}
+
+        <!-- project code cannot be edited -->
+        <a href="{{pathFor 'App.project.code' code=doc.code}}">
+            <span class="label label-default">{{doc.code}}</span>
+        </a>
+
     {{else}}
-        {{displayValue}}
+
+        {{#if editing}}
+            {{#autoForm collection="Projects" id=autoformId type="update" doc=doc}}
+                {{ > afFieldInput name=data }}
+            {{/autoForm}}
+        {{else}}
+            {{displayValue}}
+        {{/if}}
+
     {{/if}}
+
 </template>
