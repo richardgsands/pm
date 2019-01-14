@@ -51,6 +51,21 @@ export default ApiCommon = {
             }
         }, options);
     },
+
+    AutoformProjectActionPickerDef(options) {
+        options = options || {};
+
+        return _.extend({
+            label: "Action",
+            type: 'select2',
+            options: function() {
+                console.log("​AutoformProjectActionPickerDef -> Session.get('selectedProjectId')", Session.get('selectedProjectId'))
+                return ProjectActions.find({ projectId: Session.get('selectedProjectId') }).map(function(projectAction) {
+                    return { label: `${projectAction.description}`, value: projectAction._id };
+                });
+            }
+        }, options);
+    },    
     
     AutoformUserPickerDef(options) {
         options = options || {};
@@ -73,7 +88,7 @@ export default ApiCommon = {
         let column = { data, title };
 
         if (Meteor.isClient) {
-            column.tmpl = Meteor.isClient && Template.autoFormInput
+            column.tmpl = Meteor.isClient && Template.AutoformProjectActionPickerDef
             column.tmplContext = (rowData) => {
                 return {
                     doc: rowData,

@@ -27,6 +27,10 @@ Meteor.publish('projectActions.user', function (userId) {
   return ProjectActions.find({ ownerId: userId });
 });
 
+Meteor.publish('projectActions.project', function (projectId) {
+  return ProjectActions.find({ projectId: projectId });
+});
+
 // composites
 
 publishComposite('project.code.joins', function(code) {

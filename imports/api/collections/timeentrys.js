@@ -18,6 +18,11 @@ TimeEntrys.schema = new SimpleSchema({
         autoform: ApiCommon.AutoformProjectPickerDef()
     },
 
+    actionId: {
+        type: String,
+        autoform: ApiCommon.AutoformProjectActionPickerDef()
+    },
+
     date: {
         type: Date,
         autoform: ApiCommon.AutoformBootstrapDatepickerDef()

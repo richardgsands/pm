@@ -49,6 +49,8 @@ Template.App_timesheet.onCreated(function() {
         });
     }
 
+    Session.set('selectedProjectId', null);
+
 });
 
 Template.App_timesheet.onRendered(function() {
@@ -109,6 +111,13 @@ Template.App_timesheet.events({
             omitFields: ['userId']
         });
 
+    },
+
+    // select project
+    'change .js-project-id': function(event) {
+        let projectId = event.target.value;
+        Template.instance().subscribe('projectActions.project', projectId);
+        Session.set('selectedProjectId', projectId);
     }
 
 });
