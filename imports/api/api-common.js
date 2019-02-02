@@ -59,10 +59,11 @@ export default ApiCommon = {
             label: "Action",
             type: 'select2',
             options: function() {
-                console.log("​AutoformProjectActionPickerDef -> Session.get('selectedProjectId')", Session.get('selectedProjectId'))
-                return ProjectActions.find({ projectId: Session.get('selectedProjectId') }).map(function(projectAction) {
+                let options = ProjectActions.find({ projectId: Session.get('selectedProjectId') }).map(function(projectAction) {
                     return { label: `${projectAction.description}`, value: projectAction._id };
                 });
+                options.unshift({ label: "(General project time)", value: "" });
+                return options;
             }
         }, options);
     },    
