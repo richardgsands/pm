@@ -25,7 +25,7 @@ new Tabular.Table({
     // {data: "completionDate", title: "Plan Complete"},   // todo: use getEndDate()   ?
     {data: "(o = this.getProjectManager()) ? o.displayInitials() : (No PM)", title: "Project Manager"},
     {data: "(o = this.getProjectManager()) ? o.displayInitials() : (No board)", title: "Project Board"},
-    {data: "getEffort()", title: "Effort Days"}
+    {data: "_effortWithChildren", title: "Effort Days"}
   ],
   extraFields: [ "projectManagerId", "startDate" ]
 });

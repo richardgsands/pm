@@ -160,6 +160,17 @@ export default Migration = {
             }    
 
         });
+    },
+
+    updateCachedValues() {
+
+        // update all projects at bottom of tree (which should in turn update their parents)
+        Projects.find().forEach((project) => {
+            if ( project.getChildren().count() == 0 ) {
+                Projects.updateCachedValuesForProject(project);
+            }
+        });
+
     }
 
 }

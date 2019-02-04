@@ -114,10 +114,16 @@ Projects.schema = new SimpleSchema({
         optional: true,
     },
 
-    _cached: {
-        type: Object,
-        optional: true,
-        blackbox: true
+    _effort: {
+        type: Number,
+        defaultValue: 0,
+        autoform: { readonly: true }
+    },
+
+    _effortWithChildren: {
+        type: Number,
+        defaultValue: 0,
+        autoform: { readonly: true }
     }
 
 });
@@ -150,6 +156,7 @@ Projects.helpers({
 
     getRelatedProjects() {
         let relatedProjects = [];
+
         if ( parent = this.getParent() ) 
             relatedProjects.push(parent)
         
@@ -160,14 +167,27 @@ Projects.helpers({
         return relatedProjects;
     },
 
-    getEffort() {
-        let effort = 0;
-        // debugger;
-        this.getActions().forEach((a) => {
-            if (a.effort) effort += a.effort;
-        });
-        return effort;
+        
+    getFamilyAsArray() {
+        // return family tree, including this project
+
+        let family = [];
+
+        function recurse(project) {
+            family.push(project);
+            project.getChildren().forEach((child) => {
+                recurse(child);
+            });
+        }
+        recurse(this);
+
+        return family;
     },
+
+    getDescendentsAsArray() {
+        return _.filter(this.getFamilyAsArray(), (p) => { return p._id != this._id });;
+    },
+
 
     getStartDate() {
         // use inputted start date if present
@@ -285,56 +305,73 @@ Projects.helpers({
 
         return hoursSummary;
 
-    },
-    
-    getFamilyAsArray() {
-        // return family tree, including this project
-
-        let family = [];
-
-        function recurse(project) {
-            family.push(project);
-            project.getChildren().forEach((child) => {
-                recurse(child);
-            });
-        }
-        recurse(this);
-
-    },
-
-    getDescendentsAsArray() {
-        return _.filter(getFamilyAsArray(), (p) => { return p._id != this._id });;
     }
 
 });
 
+// extend functions
+
+Projects.findOneByCode = (code, selector, options) => Projects.findOne(  _.extend({ code }, selector), options );
+
+// server side functions
+
 if (Meteor.server) {
 
     Projects.updateCachedValuesForProject = function(project) {
+        console.log(`Updating cached values for ${project.code}...`);
 
-        // update project effort values
-        Projects.update(project._id, {
-            $set: { '_cached.effort': project.getEffort() }
+        // effort (without children)
+
+        let _effort = 0;
+        // debugger;
+        project.getActions().forEach((a) => {
+            if (a.effort) _effort += a.effort;
         });
 
-        // update parents
-        if (project.parentId) {
-            Projects.update(project.parentId, {
-                // $set: { 'cached.effort':  }
-            })
+        // effort (with children)
 
+        let _effortWithChildren = _effort;
+        project.getDescendentsAsArray().forEach((childProject) => {
+            if (childProject._effortWithChildren == null) return; //throw new Meteor.Error(`_effortWithChildren not defined for ${childProject.code}`);
+            _effortWithChildren += childProject._effortWithChildren;
+        });
+
+        
+
+        // update project
+        Projects.update(project._id, {
+            $set: _.extend({ _effort, _effortWithChildren }, { _NO_AUDIT: true })
+        });
+
+        // update parents (recursive)
+        if (parent = project.getParent()) {
+            Projects.updateCachedValuesForProject(parent);
         }
-    
-    
-    
-        project.getChildren().forEach((child) => {
-    
-    
-    
-            Projects.updateCachedValuesForProject(child)
-        })
-    
+
     }
 
-}
 
+
+    // hooks
+
+    Projects.after.insert((userId, doc) => {
+        Projects.updateCachedValuesForProject(doc);
+    });
+
+    Projects.after.update((userId, doc, fieldNames, modifier, options) => {
+// debugger;
+        // do nothing if we are updating cached values
+        if ( Object.keys( _.omit(modifier.$set, [ '_effort', '_effortWithChildren' ]) ).length === 0) 
+            return
+
+        console.log(`Project ${doc.code} updated!`);
+        Projects.updateCachedValuesForProject(doc);
+
+    }, {fetchPrevious: false});
+
+    Projects.after.remove((userId, doc) => {
+        // TODO
+    });
+
+
+}

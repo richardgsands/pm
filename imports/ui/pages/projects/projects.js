@@ -23,7 +23,7 @@ Template.App_projects.events({
 
     },
 
-    /*
+    
     // open project
     'click tbody > tr': function (event) {
         var dataTable = $(event.target).closest('table').DataTable();
@@ -32,9 +32,9 @@ Template.App_projects.events({
         // Your click handler logic here
         console.log(rowData);
 
-        // FlowRouter.go('App.project.code', {code: rowData.code});
+        FlowRouter.go('App.project.code', {code: rowData.code});
 
     }
-    */
+    
 
 })
