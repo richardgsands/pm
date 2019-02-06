@@ -114,6 +114,13 @@ Projects.schema = new SimpleSchema({
         optional: true,
     },
 
+    // _NO_AUDIT is a flag for AuditHooks, and should never be set to true in the database
+    _NO_AUDIT: {
+        type: Boolean,
+        optional: true,
+        autoform: { hidden: true }
+    },
+
     _effort: {
         type: Number,
         defaultValue: 0,
@@ -340,7 +347,7 @@ if (Meteor.server) {
 
         // update project
         Projects.update(project._id, {
-            $set: _.extend({ _effort, _effortWithChildren }, { _NO_AUDIT: true })
+            $set: _.extend({ _effort, _effortWithChildren }, { })
         });
 
         // update parents (recursive)
@@ -358,14 +365,15 @@ if (Meteor.server) {
         Projects.updateCachedValuesForProject(doc);
     });
 
+    // NB: modifier is the original modifier, not the one after the before hooks (e.g. in AuditHooks)
     Projects.after.update((userId, doc, fieldNames, modifier, options) => {
-// debugger;
+        
         // do nothing if we are updating cached values
         if ( Object.keys( _.omit(modifier.$set, [ '_effort', '_effortWithChildren' ]) ).length === 0) 
             return
 
         console.log(`Project ${doc.code} updated!`);
-        Projects.updateCachedValuesForProject(doc);
+        Projects.updateCachedValuesForProject( Projects.findOne(doc._id) );     // need to call findOne, as doc in mongo doc without helpers
 
     }, {fetchPrevious: false});
 

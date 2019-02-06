@@ -15,6 +15,7 @@ export default AuditHooks = function(collection) {
 
         if (modifier.$set._NO_AUDIT) {
             delete modifier.$set._NO_AUDIT;
+            if ( !Object.keys(modifier.$set).length ) delete modifier.$set;
             return
         }
 
