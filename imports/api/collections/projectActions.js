@@ -103,6 +103,18 @@ ProjectActions.schema = new SimpleSchema({
 ProjectActions.attachSchema(ProjectActions.schema);
 AuditHooks(ProjectActions);
 
+let updateCachedValues = (userId, doc) => {
+    if (doc.ownerId) {
+        Meteor.users.updateCachedValuesForUser(Meteor.users.findOne(doc.ownerId));
+    }
+    if (doc.projectId) {
+        Projects.updateCachedValuesForProject(Projects.findOne(doc.projectId));
+    }
+}
+
+ProjectActions.after.update(updateCachedValues);
+ProjectActions.after.insert(updateCachedValues);
+
 ProjectActions.helpers({
 
     getProject() {

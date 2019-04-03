@@ -53,7 +53,8 @@ export default Migration = {
                     department: project.code.substr(0,2)
                 });                    
             } catch(e) {
-                console.log('error adding project...', project.code, project.name, project.priority, project.start_date);    
+                console.log('error adding project...', project.code, project.name, project.priority, project.start_date);
+                console.log(e);
                 return;
             }
 
@@ -169,6 +170,12 @@ export default Migration = {
             if ( project.getChildren().count() == 0 ) {
                 Projects.updateCachedValuesForProject(project);
             }
+        });
+
+        // update all users
+        Meteor.users.find().forEach((user) => {
+            console.log(`Updating ${user.initials}`);
+            Meteor.users.updateCachedValuesForUser(user);
         });
 
     }

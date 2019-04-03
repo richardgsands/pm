@@ -361,7 +361,7 @@ Projects.findOneByCode = (code, selector, options) => Projects.findOne(  _.exten
 
 if (Meteor.server) {
 
-    Projects.updateCachedValuesForProject = function(project) {
+    Projects.updateCachedValuesForProject = (project) => {
         console.log(`Updating cached values for ${project.code}...`);
 
         // effort (without children)
@@ -399,7 +399,7 @@ if (Meteor.server) {
     // hooks
 
     Projects.after.insert((userId, doc) => {
-        Projects.updateCachedValuesForProject(doc);
+        Projects.updateCachedValuesForProject( Projects.findOne(doc._id) );     // need to call findOne, as doc in mongo doc without helpers
     });
 
     // NB: modifier is the original modifier, not the one after the before hooks (e.g. in AuditHooks)
