@@ -23,7 +23,7 @@ Template.registerHelper('renderIf', (cond, str) => {
     return (cond) ? str : null;
 });
 
-Template.registerHelper('renderUnless', (cond, str) => {
+Template.registerHelper('renderIfNot', (cond, str) => {
     return (!cond) ? str : null;
 });
 
@@ -38,4 +38,8 @@ Template.registerHelper('isActive', (a, b) => {
 
 Template.registerHelper('getProp', (object, prop) => {
     return object[prop];
+});
+
+Template.registerHelper('objectKeys', (object) => {
+    return Object.keys(object);
 });

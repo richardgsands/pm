@@ -85,6 +85,25 @@ export default ApiCommon = {
         };
     },
 
+    AutoformGatePickerDef(options) {
+        options = options || {};
+
+        return {
+            type: 'select2',
+            options: function() {
+                return [ { label: '(None)', value: null } ].concat(
+                    Object.keys(ProjectGates.Gates).map(function(gateKey, index) {
+                        return { label: ProjectGates.Gates[gateKey], value: index+1 };
+                    })
+                );
+            },
+            select2Options: {
+                width: '50%',
+                multiple: options.multiple
+            }
+        };
+    },
+
     TabularGetColumn(data, title, helper) {
         let column = { data, title };
 

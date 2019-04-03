@@ -8,6 +8,7 @@ import ApiCommon from '../api-common';
 import moment from 'moment';
 
 import TimeEntrys from './timeentrys';
+import ProjectGates from './projectGates';
 
 export default Projects = new Mongo.Collection('projects');
 
@@ -114,6 +115,42 @@ Projects.schema = new SimpleSchema({
         optional: true,
     },
 
+    gatePassed: {
+        type: SimpleSchema.Integer,
+        min: 1,
+        max: Object.keys(ProjectGates.Gates).length,
+        optional: true,
+        autoform: ApiCommon.AutoformGatePickerDef()
+    },
+
+    gate1date: {
+        type: Date,
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
+        optional: true,
+        label: "Gate 1 target"
+    },
+    
+    gate2date: {
+        type: Date,
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
+        optional: true,
+        label: "Gate 2 target"
+    },
+    
+    gate3date: {
+        type: Date,
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
+        optional: true,
+        label: "Gate 3 target"
+    },
+    
+    gate4date: {
+        type: Date,
+        autoform: ApiCommon.AutoformBootstrapDatepickerDef(),
+        optional: true,
+        label: "Gate 4 target"
+    },
+    
     // _NO_AUDIT is a flag for AuditHooks, and should never be set to true in the database
     _NO_AUDIT: {
         type: Boolean,
