@@ -7,7 +7,10 @@ export default ApiCommon = {
             type: 'select2',
             options: function() {
                 return Object.keys(object).map(key => {
-                    return { label: `${key} (${object[key]})`, value: key }
+                    if (object[key])
+                        return { label: `${key} (${object[key]})`, value: key }
+                    else
+                        return { label: `${key}`,                  value: key }
                 });
             }
         }, options);

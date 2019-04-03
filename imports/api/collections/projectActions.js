@@ -13,10 +13,10 @@ ProjectActions.Statuses = {
     IP: "In progress",
     CO: "Complete",
     OH: "On hold",
-    RS: "RS",
-    SD: "SD",
-    TR: "TR",
-    NA: "NA"
+    RS: null,
+    SD: null,
+    TR: null,
+    NA: null
 }
 
 ProjectActions.schema = new SimpleSchema({
