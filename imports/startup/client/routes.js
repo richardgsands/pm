@@ -8,6 +8,8 @@ import '../../ui/pages/not-found/not-found.js';
 import '../../ui/pages/timesheet/timesheet';
 import '../../ui/pages/overview/overview';
 import '../../ui/pages/projects/projects.js';
+import '../../ui/pages/resourcing/resourcing.js';
+
 import '../../ui/pages/project/project.js';
 import '../../ui/components/project/project_tor.js';
 import '../../ui/components/project/project_outcomes.js';
@@ -62,6 +64,13 @@ privateRoutes.route('/projects', {
   name: 'App.projects',
   action() {
     BlazeLayout.render('App_body', { main: 'App_projects' });
+  }
+});
+
+privateRoutes.route('/resourcing', {
+  name: 'App.resourcing',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_resourcing' });
   }
 });
 
