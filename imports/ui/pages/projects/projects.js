@@ -28,12 +28,9 @@ Template.App_projects.events({
     'click tbody > tr': function (event) {
         var dataTable = $(event.target).closest('table').DataTable();
         var rowData = dataTable.row(event.currentTarget).data();
-        if (!rowData) return; // Won't be data if a placeholder row is clicked
-        // Your click handler logic here
-        console.log(rowData);
+        if (!rowData) return; // if a placeholder row is clicked
 
         FlowRouter.go('App.project.code', {code: rowData.code});
-
     }
     
 
