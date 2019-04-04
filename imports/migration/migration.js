@@ -37,26 +37,33 @@ export default Migration = {
 
             console.log('importing...', project.code, project.name, project.priority, project.start_date);
 
-            if ( Projects.findOne({ code: project.code }) ) {
-                console.log('  > project already exists, skipping...');
-                return
-            };
-
-            // create project
-
-            try {
-                projectId = Projects.insert({
-                    code: project.code,
-                    name: project.name,
-                    priority: (p = project.priority) ? parseInt(p) : null,
-                    startDate: _getDate(project.start_date),
-                    department: project.code.substr(0,2)
-                });                    
-            } catch(e) {
-                console.log('error adding project...', project.code, project.name, project.priority, project.start_date);
-                console.log(e);
-                return;
+            let projectId;
+            {
+                let p = Projects.findOne({ code: project.code });
+                projectId = p && p._id;
             }
+            if ( !projectId ) {
+
+                // create project
+
+                try {
+                    projectId = Projects.direct.insert({
+                        code: project.code,
+                        name: project.name,
+                        priority: (p = project.priority) ? parseInt(p) : null,
+                        startDate: _getDate(project.start_date),
+                        department: project.code.substr(0,2)
+                    });                    
+                } catch(e) {
+                    console.log('error adding project...', project.code, project.name, project.priority, project.start_date);
+                    console.log(e);
+                    return;
+                }
+
+            } else {
+                console.log('  > project already exists, wiping and importing actions...');
+                ProjectActions.remove({projectId});
+            };
 
             // create project milestones
 
@@ -82,7 +89,7 @@ export default Migration = {
                 //     milestoneCounter++;
                     
                 // } else {
-                    ProjectActions.insert({
+                    ProjectActions.direct.insert({
 
                         projectId: projectId,
                         // milestoneId: milestoneIds[milestoneCounter] || null,
@@ -105,6 +112,8 @@ export default Migration = {
             })
 
         });
+
+        Migration.updateCachedValues();
 
     },
 
@@ -201,7 +210,7 @@ function _getUserIdByInitials(initialsStr) {
         return result += (index<2) ? elem.toUpperCase() : elem.toLowerCase();
     }, "");
 
-    console.log('initials', initials, initialsStr);
+    // console.log('initials', initials, initialsStr);
     
     // returns userId for mongo query (creating user if necessary)
     let user = Meteor.users.findOne({ initials });
