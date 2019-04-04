@@ -1,8 +1,9 @@
 <template name="App_overview">
 
     <h1 class="page-header">Overview</h1>
+    <h2>{{user.displayName}}</h2>
 
-    <a href="{{pathFor 'App.overview.user.loggedInUser'}}">My tasks</a> | <a href="{{pathFor 'App.overview.department' department=currentUser.department}}">My department</a>
+    <!-- <a href="{{pathFor 'App.overview.user.loggedInUser'}}">My tasks</a> | <a href="{{pathFor 'App.overview.department' department=currentUser.department}}">My department</a> -->
 
     {{#if forLoggedInUser}}
     {{/if}}
@@ -11,7 +12,9 @@
         <thead>
           <tr>
             <th scope="col">Project</th>
+            {{#if actionsOverdue}}
             <th scope="col">Overdue</th>
+            {{/if}}
             <th scope="col">This week</th>
             <th scope="col">Next week</th>
           </tr>
@@ -19,14 +22,16 @@
         <tbody>
 
             {{#each projectsWithWeeklySummary}}
-            <tr>
+            <tr class="js-table-row" data-project-code={{this.code}}>
                 <td>
                     <p>{{this.code}}</p>
                     <p>{{this.name}}</p>
                 </td>
+                {{#if actionsOverdue}}
                 <td>
                     {{#each this.actionsOverdue}}{{> App_overview__project_action_text this}}{{/each}}
                 </td>
+                {{/if}}
                 <td>
                     {{#each this.actionsNextWeek}}{{> App_overview__project_action_text this}}{{/each}}
                 </td>
@@ -38,31 +43,6 @@
 
         </tbody>
       </table>
-
-
-
-
-
-    {{#if actionsOverdue}}
-        <h2>Overdue</h2>
-        {{#each actionsOverdue}}
-        {{> project_action action=this}}
-        {{/each}}
-    {{/if}}
-
-    <h2>This week</h2>
-    {{#each actionsThisWeek}}
-    {{> project_action action=this}}
-    {{else}}
-    <p>No actions this week</p>
-    {{/each}}
-
-    <h2>Next week</h2>
-    {{#each actionsNextWeek}}
-    {{> project_action action=this}}
-    {{else}}
-    <p>No actions next week</p>
-    {{/each}}
     
 </template>
 

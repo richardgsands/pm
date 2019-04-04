@@ -50,6 +50,15 @@ Template.App_overview.onRendered(function() {
 
 Template.App_overview.helpers({
 
+    user() {
+        // todo: handle if department (instead of user)
+        return Meteor.users.findOne({ username: Template.instance().getUsername() })
+    },
+
+    actionsOverdue() {
+        return getActionsOverdue().count();
+    },
+
     projectsWithWeeklySummary() {
         let actionsOverdue = getActionsOverdue();        
         let actionsThisWeek = getActionsThisWeek();
@@ -115,6 +124,10 @@ Template.App_overview.helpers({
 
 Template.App_overview.events({
 
+    'click .js-table-row' (event, template) {
+        FlowRouter.go('App.project.code', {code: event.currentTarget.dataset.projectCode}, {section: 'actions'});
+    }
+
 });
 
 let getActionsOverdue = () => {
@@ -134,6 +147,7 @@ let getActionsThisWeek = () => {
     let userIds = Template.instance().getUserIds();
     if (!userIds) return;
 
+    // todo: abstract
     return ProjectActions.find({$or: [
         {
             ownerId: { $in: userIds },
