@@ -88,11 +88,23 @@ export default Migration = {
                 // if (action.milestone) {
                 //     milestoneCounter++;
                     
+                let gateId;
+                // decide gate
+                if ( 'Fill out Tracker'.toUpperCase() == action.description.toUpperCase() )
+                    gateId = 'gate1';
+                else if ( 'Create Project Brief'.toUpperCase() == action.description.toUpperCase() )
+                    gateId = 'gate1';
+                else if ( 'Initiation gate'.toUpperCase() == action.description.toUpperCase() )
+                    gateId = 'gate1';
+                else
+                    gateId = 'gate2';
+
                 // } else {
                     ProjectActions.direct.insert({
 
                         projectId: projectId,
                         // milestoneId: milestoneIds[milestoneCounter] || null,
+                        gateId: gateId,
                         milestone: (!!action.milestone),
                         status: (s = action.status) ? s.toUpperCase() : Object.keys(Enums.ProjectActionsStatuses)[0],
                         description: action.description,

@@ -101,8 +101,7 @@ export default ApiCommon = {
                 );
             },
             select2Options: {
-                width: '50%',
-                multiple: options.multiple
+                width: '50%'
             }
         };
     },

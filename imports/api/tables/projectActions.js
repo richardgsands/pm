@@ -35,7 +35,7 @@ new Tabular.Table({
       }
     }
   ],
-  extraFields: ['projectId', 'ownerId', '_order', 'milestone'],  // NB: data for edit form is dependent on subscription created by table, 
+  extraFields: ['projectId', 'ownerId', '_order', 'milestone', 'gateId'],  // NB: data for edit form is dependent on subscription created by table, 
                                                                 // i.e. include all fields that need to be fetched for edit form in columns or extraFields
 
   // DataTables options

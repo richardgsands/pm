@@ -18,11 +18,12 @@ ProjectActions.schema = new SimpleSchema({
         }
     },
 
-    // gateId: {
-    //     type: String,
-    //     allowedValues: Object.keys(Enums.ProjectGates),
-    //     // autoform: ApiCommon.AutoformGatePickerDef()
-    // },
+    gateId: {
+        type: String,
+        autoform: ApiCommon.AutoformGatePickerDef(),
+        allowedValues: Object.keys(Enums.ProjectGates),
+        label: 'Gate'
+    },
 
     status: {
         type: String,

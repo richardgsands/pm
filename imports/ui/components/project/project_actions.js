@@ -28,7 +28,8 @@ Template.project_actions.helpers({
 
     tableSelector() {
         return {
-            projectId: Template.instance().data._id
+            projectId: Template.instance().data._id,
+            gateId: Template.instance().selectedGate.get()
         }
     },
 
