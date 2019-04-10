@@ -94,7 +94,7 @@ export default Migration = {
                         projectId: projectId,
                         // milestoneId: milestoneIds[milestoneCounter] || null,
                         milestone: (!!action.milestone),
-                        status: (s = action.status) ? s.toUpperCase() : Object.keys(ProjectActions.Statuses)[0],
+                        status: (s = action.status) ? s.toUpperCase() : Object.keys(Enums.ProjectActionsStatuses)[0],
                         description: action.description,
                         effort: (e = action.effort) ? parseFloat(e) : null,
                         ownerId: _getUserIdByInitials(action.responsible),
@@ -240,9 +240,9 @@ function _getProgressFromStatus(status) {
     if (!status) return 0;
 
     switch (status.toUpperCase()) {
-        case ProjectActions.Statuses.NS:
+        case Enums.ProjectActionsStatuses.NS:
             return 0;
-        case ProjectActions.Statuses.CO:
+        case Enums.ProjectActionsStatuses.CO:
             return 1
         default:
             return 0.5

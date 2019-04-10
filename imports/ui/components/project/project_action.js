@@ -18,7 +18,7 @@ Template.project_action.helpers({
     },
 
     renderStatus(status) {
-        return `${status} (${ProjectActions.Statuses[status]})`;
+        return `${status} (${Enums.ProjectActionsStatuses[status]})`;
     }
 
 });

@@ -1,3 +1,5 @@
+
+import './enums';
 import './projectActions';
 import './projects';
 import './timeentrys';

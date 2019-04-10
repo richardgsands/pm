@@ -95,8 +95,8 @@ export default ApiCommon = {
             type: 'select2',
             options: function() {
                 return [ { label: '(None)', value: null } ].concat(
-                    Object.keys(ProjectGates.Gates).map(function(gateKey, index) {
-                        return { label: ProjectGates.Gates[gateKey], value: index+1 };
+                    Object.keys(Enums.ProjectGates).map(function(gateKey, index) {
+                        return { label: Enums.ProjectGates[gateKey], value: gateKey };
                     })
                 );
             },

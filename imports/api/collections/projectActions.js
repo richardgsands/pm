@@ -3,21 +3,11 @@ import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import AuditHooks from '../audit-hooks';
 import ApiCommon from '../api-common';
+import Enums from './enums';
 import Projects from './projects';
+import ProjectGates from './projectGates';
 
 export default ProjectActions = new Mongo.Collection('projectActions');
-
-ProjectActions.Statuses = {
-    // todo: implement others (here and in projectMilestones helpers)
-    NS: "Not started",
-    IP: "In progress",
-    CO: "Complete",
-    OH: "On hold",
-    RS: null,
-    SD: null,
-    TR: null,
-    NA: null
-}
 
 ProjectActions.schema = new SimpleSchema({
 
@@ -28,11 +18,17 @@ ProjectActions.schema = new SimpleSchema({
         }
     },
 
+    // gateId: {
+    //     type: String,
+    //     allowedValues: Object.keys(Enums.ProjectGates),
+    //     // autoform: ApiCommon.AutoformGatePickerDef()
+    // },
+
     status: {
         type: String,
-        allowedValues: Object.keys(ProjectActions.Statuses),
-        autoform: ApiCommon.AutoformHashPickerDef(ProjectActions.Statuses, { type: 'select-radio', template: 'buttonGroup' }),
-        //defaultValue: Object.keys(ProjectActions.Statuses)[0],
+        allowedValues: Object.keys(Enums.ProjectActionsStatuses),
+        autoform: ApiCommon.AutoformHashPickerDef(Enums.ProjectActionsStatuses, { type: 'select-radio', template: 'buttonGroup' }),
+        //defaultValue: Object.keys(Enums.ProjectActionsStatuses)[0],
     },
 
     ownerId: {

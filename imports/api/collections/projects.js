@@ -8,7 +8,7 @@ import ApiCommon from '../api-common';
 import moment from 'moment';
 
 import TimeEntrys from './timeentrys';
-import ProjectGates from './projectGates';
+import Enums from './enums';
 
 export default Projects = new Mongo.Collection('projects');
 
@@ -118,7 +118,7 @@ Projects.schema = new SimpleSchema({
     gatePassed: {
         type: SimpleSchema.Integer,
         min: 1,
-        max: Object.keys(ProjectGates.Gates).length,
+        max: Object.keys(Enums.ProjectGates).length,
         optional: true,
         autoform: ApiCommon.AutoformGatePickerDef()
     },

@@ -33,11 +33,11 @@ Template.project_actions.helpers({
     },
 
     gates() {
-        return ProjectGates.Gates
+        return Enums.ProjectGates
     },
 
     selectedGateId() { return Template.instance().selectedGate.get() },
-    selectedGate()  { return ProjectGates.Gates[ Template.instance().selectedGate.get() ] },
+    selectedGate()  { return Enums.ProjectGates[ Template.instance().selectedGate.get() ] },
 
     showChecklist() { return Template.instance().showChecklist.get() },
 
