@@ -82,22 +82,50 @@ export default Migration = {
 
             // create project actions
 
-            // let milestoneCounter = 0;
-            project.actions.forEach(action => {         // loop over all 'actions' (including milestones)
+            // check if gates are in tracker for this project
+            let haveGate = {};
+            project.actions.forEach(action => {
+                [1,2,3,4].forEach((g) => {
+                    if ( `Gate ${g}`.toUpperCase() == action.description.toUpperCase() || `G${g}`.toUpperCase() == action.description.toUpperCase() )
+                        haveGate[g] = true;                    
+                });
+            });
 
+            // let milestoneCounter = 0;
+            let gateReached = {};
+            project.actions.forEach(action => {         // loop over all 'actions' (including milestones)
+console.log(action.description);
                 // if (action.milestone) {
                 //     milestoneCounter++;
                     
-                let gateId;
                 // decide gate
-                if ( 'Fill out Tracker'.toUpperCase() == action.description.toUpperCase() )
-                    gateId = 'gate1';
-                else if ( 'Create Project Brief'.toUpperCase() == action.description.toUpperCase() )
-                    gateId = 'gate1';
-                else if ( 'Initiation gate'.toUpperCase() == action.description.toUpperCase() )
-                    gateId = 'gate1';
-                else
-                    gateId = 'gate2';
+                let gateId;
+
+                // first, set gateId if gates are in tracker
+                [1,2,3,4].some((g) => {
+                    if ( haveGate[g] && (!gateReached[g] || g===4) ) {
+                        gateId = `gate${g}`
+                        if ( `Gate ${g}`.toUpperCase() == action.description.toUpperCase() || `G${g}`.toUpperCase() == action.description.toUpperCase() )
+                            gateReached[g] = true;
+                        console.log(g, haveGate[g], gateReached[g]);
+                        return true                 // returns true, so some loop will stop
+                    }
+
+                    return false                    // continue some loop
+                });
+
+                // if gateId hasn't been set, do a few other checks
+                if (!gateId) {
+                    if ( 'Fill out Tracker'.toUpperCase() == action.description.toUpperCase() )
+                        gateId = 'gate1';
+                    else if ( 'Create Project Brief'.toUpperCase() == action.description.toUpperCase() )
+                        gateId = 'gate1';
+                    else if ( 'Initiation gate'.toUpperCase() == action.description.toUpperCase() )
+                        gateId = 'gate1';                        
+                }
+
+                // default to gate2 if still not set
+                if (!gateId) gateId = 'gate2';
 
                 // } else {
                     ProjectActions.direct.insert({
@@ -211,6 +239,11 @@ function _getDate(dateStr) {
 function _getUserIdByInitials(initialsStr) {
     if (!initialsStr) return null;
 
+    // trim white space and invalid characters
+    initialsStr = initialsStr.replace('\r', '');
+    initialsStr = initialsStr.replace('\n', '');
+    initialsStr = initialsStr.trim()
+
     // pick first user if multiple are listed
 
     if      (_.contains(initialsStr, "/")) initials = initialsStr.split("/")[0];
@@ -221,6 +254,9 @@ function _getUserIdByInitials(initialsStr) {
     initials = _.reduce(_.clone(initials), (result, elem, index)  => {
         return result += (index<2) ? elem.toUpperCase() : elem.toLowerCase();
     }, "");
+
+    // special cases
+    if (initials.toUpperCase() === "MAH") initials = "MaH";
 
     // console.log('initials', initials, initialsStr);
     
