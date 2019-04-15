@@ -169,6 +169,18 @@ Projects.schema = new SimpleSchema({
         type: Number,
         defaultValue: 0,
         autoform: { readonly: true }
+    },
+
+    _effortByHalf: {
+        type: Object,
+        blackbox: true,
+        defaultValue: {}
+    },
+
+    _effortWithChildrenByHalf: {
+        type: Object,
+        blackbox: true,
+        defaultValue: {}
     }
 
 });
@@ -370,27 +382,57 @@ if (Meteor.server) {
     Projects.updateCachedValuesForProject = (project) => {
         console.log(`Updating cached values for ${project.code}...`);
 
+        const CACHE_HALFS  = [0];   // zero is this half
+
         // effort (without children)
 
         let _effort = 0;
-        // debugger;
         project.getActions().forEach((a) => {
             if (a.effort) _effort += a.effort;
+        });
+
+        let _effortByHalf = {};
+        let nowHalf = moment().startOf('quarter');
+        if (nowHalf.month() % 6 != 0) nowHalf.subtract(3, 'months');
+
+        let half;
+        CACHE_HALFS.forEach((offset) => {
+            half = moment(nowHalf).add(offset*6, 'months');
+
+            _effortByHalf[offset] = getTotalsForDateRange(project._id, {
+                $gte: half.toDate(),
+                $lt:  moment(half).add(6,'months').toDate(),    
+            });
         });
 
         // effort (with children)
 
         let _effortWithChildren = _effort;
         project.getDescendentsAsArray().forEach((childProject) => {
-            if (childProject._effortWithChildren == null) return; //throw new Meteor.Error(`_effortWithChildren not defined for ${childProject.code}`);
-            _effortWithChildren += childProject._effortWithChildren;
+            if (childProject._effortWithChildren != null) {
+                _effortWithChildren += childProject._effortWithChildren;                
+            } else {
+                //TODO: handle error
+                //throw new Meteor.Error(`_effortWithChildren not defined for ${childProject.code}`);
+            }
+
+            // if (childProject._effortWithChildrenByHalf != null) {
+                
+
+            //     _effortWithChildren += childProject._effortWithChildren;                
+            // } else {
+            //     //TODO: handle error
+            //     //throw new Meteor.Error(`_effortWithChildren not defined for ${childProject.code}`);
+            // }
+
         });
 
         
 
         // update project
-        Projects.update(project._id, {
-            $set: _.extend({ _effort, _effortWithChildren }, { })
+        // TODO: check effect of skipping hooks (direct)
+        Projects.direct.update(project._id, {
+            $set: _.extend({ _effort, _effortWithChildren, _effortByHalf }, { })
         });
 
         // update parents (recursive)
@@ -425,4 +467,34 @@ if (Meteor.server) {
     });
 
 
+}
+
+// helpers (todo: move somewhere else perhaps?)
+// TODO: duplicated in users.js
+let getTotalsForDateRange = (projectId, dueDateSelector) => {
+    let estimatedTotal = 0;
+    let estimatedCompleted = 0;
+    let actualLogged = 0;
+
+    ProjectActions.find({
+        projectId: projectId,
+        // status: { $in: [ 'NS', 'IP' ] },
+        dueDate: dueDateSelector
+    }).forEach((action) => {
+        // TODO: add 'OH'
+        estimatedTotal += action.effort || 0;
+        if (action.status == 'CO') {
+            estimatedCompleted += action.effort || 0;
+        }
+    });
+
+    TimeEntrys.find({
+        projectId: projectId,
+        date: dueDateSelector
+    }).forEach((timeentry) => {
+        // TODO: handle when more than 7.5 hours is logged in one day...
+        actualLogged += timeentry.hours / 7.5
+    });
+
+    return { estimatedTotal, estimatedCompleted, actualLogged };
 }
