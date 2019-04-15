@@ -1,3 +1,4 @@
 node_modules/
 private/migration/*
 !private/migration/example.json
+!private/migration/.opms_exceptions.json

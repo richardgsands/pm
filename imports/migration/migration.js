@@ -6,6 +6,8 @@ import moment from 'moment';
 
 import '/imports/api/collections';
 
+let Opms_Exceptions = JSON.parse( Assets.getText('migration/opms_exceptions.json') );
+
 export default Migration = {
 
     clearAllProjects(checkStr) {

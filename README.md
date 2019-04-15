@@ -1,10 +1,11 @@
 # oxts-pm
 
-### Getting started
+### Getting started (only need to do this once)
 
 In the project directory, run:
 
 ```
+cp -n private/migration/.opms_exceptions.json private/migration/opms_exceptions.json
 npm install
 ```
 
