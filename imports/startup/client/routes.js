@@ -7,6 +7,7 @@ import '../../ui/pages/home/home.js';
 import '../../ui/pages/not-found/not-found.js';
 import '../../ui/pages/timesheet/timesheet';
 import '../../ui/pages/mytasks/mytasks';
+import '../../ui/pages/overview/overview';
 import '../../ui/pages/projects/projects.js';
 import '../../ui/pages/resourcing/resourcing.js';
 
@@ -96,6 +97,16 @@ privateRoutes.route('/mytasks/department/:department', {
     BlazeLayout.render('App_body', { main: 'App_mytasks' });
   }
 });
+
+// overview
+
+privateRoutes.route('/overview', {
+  name: 'App.overview',
+  action() {
+    BlazeLayout.render('App_body', { main: 'App_overview' });
+  }
+});
+
 
 // timesheet
 
