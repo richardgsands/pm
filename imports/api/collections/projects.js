@@ -185,6 +185,11 @@ Projects.helpers({
         return this.projectManagerId && Meteor.users.findOne(this.projectManagerId);
     },
 
+    getProjectManagerInitials() {
+        let projectManager = this.getProjectManager();
+        return projectManager && projectManager.initials;
+    },
+
     getActions() {
         // return ProjectActions.find({ projectId: this._id }, { sort: { _order: 1 } });    // for using sortable
         return ProjectActions.find({ projectId: this._id }, { sort: { comGpletionDate: 1 } });       // sort by completion date, then milestone status

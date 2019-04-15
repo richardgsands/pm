@@ -110,7 +110,7 @@ export default ApiCommon = {
         let column = { data, title };
 
         if (Meteor.isClient) {
-            column.tmpl = Meteor.isClient && Template.AutoformProjectActionPickerDef
+            column.tmpl = Meteor.isClient && Template.autoFormInput
             column.tmplContext = (rowData) => {
                 return {
                     doc: rowData,
