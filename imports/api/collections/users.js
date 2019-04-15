@@ -85,6 +85,7 @@ Meteor.users.updateCachedValuesForUser = (user) => {
 }
 
 // helpers (todo: move somewhere else perhaps?)
+// TODO: duplicated in projects.js
 let getTotalsForDateRange = (user, dueDateSelector) => {
     let estimatedTotal = 0;
     let estimatedTodo = 0;
@@ -94,8 +95,10 @@ let getTotalsForDateRange = (user, dueDateSelector) => {
         // status: { $in: [ 'NS', 'IP' ] },
         dueDate: dueDateSelector
     }).forEach((action) => {
+        // TODO: add 'OH'
+        // TODO: switch to same format as projects.js
         estimatedTotal += action.effort || 0;
-        if (action.status == 'NS' || action.status == 'CO') {
+        if (action.status == 'NS' || action.status == 'IP') {
             estimatedTodo += action.effort || 0;
         }
     });
