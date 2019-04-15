@@ -8,6 +8,7 @@
     {{#if forLoggedInUser}}
     {{/if}}
 
+
     <table class="table">
         <thead>
           <tr>
@@ -33,10 +34,10 @@
                 </td>
                 {{/if}}
                 <td>
-                    {{#each this.actionsNextWeek}}{{> App_overview__project_action_text this}}{{/each}}
+                    {{#each this.actionsThisWeek}}{{> App_overview__project_action_text this}}{{/each}}
                 </td>
                 <td>
-                    {{#each this.actionsThisWeek}}{{> App_overview__project_action_text this}}{{/each}}
+                    {{#each this.actionsNextWeek}}{{> App_overview__project_action_text this}}{{/each}}
                 </td>
             </tr>
             {{/each}}
