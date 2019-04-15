@@ -174,13 +174,13 @@ Projects.schema = new SimpleSchema({
     _effortByHalf: {
         type: Object,
         blackbox: true,
-        defaultValue: {}
+        // defaultValue: {}
     },
 
     _effortWithChildrenByHalf: {
         type: Object,
         blackbox: true,
-        defaultValue: {}
+        // defaultValue: {}
     }
 
 });
@@ -408,22 +408,25 @@ if (Meteor.server) {
         // effort (with children)
 
         let _effortWithChildren = _effort;
+        let _effortWithChildrenByHalf = _effortByHalf;
         project.getDescendentsAsArray().forEach((childProject) => {
             if (childProject._effortWithChildren != null) {
-                _effortWithChildren += childProject._effortWithChildren;                
+                _effortWithChildren += childProject._effortWithChildren;
             } else {
-                //TODO: handle error
-                //throw new Meteor.Error(`_effortWithChildren not defined for ${childProject.code}`);
+                //TODO: handle error (do we need to?)
+                // throw new Meteor.Error(`_effortWithChildren not defined for ${childProject.code}`);
             }
 
-            // if (childProject._effortWithChildrenByHalf != null) {
-                
-
-            //     _effortWithChildren += childProject._effortWithChildren;                
-            // } else {
-            //     //TODO: handle error
-            //     //throw new Meteor.Error(`_effortWithChildren not defined for ${childProject.code}`);
-            // }
+            if (childProject._effortWithChildrenByHalf != null) {
+                CACHE_HALFS.forEach((offset) => {
+                    ['estimatedTotal', 'estimatedCompleted', 'actualLogged'].forEach((key) => {
+                        _effortWithChildrenByHalf[offset][key] += ( childProject._effortWithChildrenByHalf[offset] && childProject._effortWithChildrenByHalf[offset][key] ) || 0;
+                    });
+                });
+            } else {
+                //TODO: handle error (do we need to?)
+                // throw new Meteor.Error(`_effortWithChildrenByHalf not defined for ${childProject.code}`);
+            }
 
         });
 
@@ -432,7 +435,7 @@ if (Meteor.server) {
         // update project
         // TODO: check effect of skipping hooks (direct)
         Projects.direct.update(project._id, {
-            $set: _.extend({ _effort, _effortWithChildren, _effortByHalf }, { })
+            $set: _.extend({ _effort, _effortWithChildren, _effortByHalf, _effortWithChildrenByHalf }, { })
         });
 
         // update parents (recursive)
@@ -454,6 +457,7 @@ if (Meteor.server) {
     Projects.after.update((userId, doc, fieldNames, modifier, options) => {
         
         // do nothing if we are updating cached values
+        // TODO: remove this, now handled by using direct
         if ( Object.keys( _.omit(modifier.$set, [ '_effort', '_effortWithChildren' ]) ).length === 0) 
             return
 
