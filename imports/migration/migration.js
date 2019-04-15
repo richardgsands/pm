@@ -3,8 +3,10 @@
 //        Run `Migration.importJSON(<filename>)`
 //        where filename is for the file in the private/migration folder
 import moment from 'moment';
+const csv=require('csvtojson');
 
 import '/imports/api/collections';
+import { isNumber } from 'util';
 
 let Opms_Exceptions = JSON.parse( Assets.getText('migration/opms_exceptions.json') );
 
@@ -39,6 +41,11 @@ export default Migration = {
 
             console.log('importing...', project.code, project.name, project.priority, project.start_date);
 
+            Opms_Exceptions.owner.forEach((owner) => {
+                if (project.project_manager && project.project_manager.toUpperCase() == owner.find.toUpperCase()) project.project_manager = owner.replace
+                // TODO: project board
+            });
+
             let projectId;
             {
                 let p = Projects.findOne({ code: project.code });
@@ -54,7 +61,8 @@ export default Migration = {
                         name: project.name,
                         priority: (p = project.priority) ? parseInt(p) : null,
                         startDate: _getDate(project.start_date),
-                        department: project.code.substr(0,2)
+                        department: project.code.substr(0,2),
+                        projectManagerId: _getUserIdByInitials(project.project_manager)
                     });                    
                 } catch(e) {
                     console.log('error adding project...', project.code, project.name, project.priority, project.start_date);
@@ -64,6 +72,7 @@ export default Migration = {
 
             } else {
                 console.log('  > project already exists, wiping and importing actions...');
+                //TODO: upsert
                 ProjectActions.remove({projectId});
             };
 
@@ -129,33 +138,108 @@ console.log(action.description);
                 // default to gate2 if still not set
                 if (!gateId) gateId = 'gate2';
 
-                // } else {
-                    ProjectActions.direct.insert({
+                // specific data cleanup
 
-                        projectId: projectId,
-                        // milestoneId: milestoneIds[milestoneCounter] || null,
-                        gateId: gateId,
-                        milestone: (!!action.milestone),
-                        status: (s = action.status) ? s.toUpperCase() : Object.keys(Enums.ProjectActionsStatuses)[0],
-                        description: action.description,
-                        effort: (e = action.effort) ? parseFloat(e) : null,
-                        ownerId: _getUserIdByInitials(action.responsible),
-                        dueDate: _getDate(action.due_date),
-                        completedDate: _getDate(action.complete_date),
-                        progress: _getProgressFromStatus(action.status),
-                        _order: actionIndex
-    
-                        // todo: io - should this be linked to outcomes?
-    
-                    });
-                    actionIndex++
-                // }
+                Opms_Exceptions.action_status.forEach((action_status) => {
+                    if (action.status && action.status.toUpperCase() == action_status.find.toUpperCase()) action.status = action_status.replace
+                });
+                Opms_Exceptions.owner.forEach((owner) => {
+                    if (action.responsible && action.responsible.toUpperCase() == owner.find.toUpperCase()) action.responsible = owner.replace
+                });
+
+                // if (action.status == 'CIO') action.status = 'CO';
+                // if (action.status == 'CP') action.status = 'CO';
+                // if (action.responsible == '??') action.responsible = null;
+                // if (action.responsible && action.responsible.toUpperCase() == 'All'.toUpperCase()) action.responsible = null;
+                // if (action.responsible && action.responsible.toUpperCase() == 'All developers'.toUpperCase()) action.responsible = null;
+                // if (action.responsible && action.responsible.toUpperCase() == 'All developers'.toUpperCase()) action.responsible = null;
+                // if (action.responsible && action.responsible.toUpperCase() == 'ABL'.toUpperCase()) action.responsible = 'AL';
+                // if (action.responsible && action.responsible.toUpperCase() == 'M'.toUpperCase()) action.responsible = null;
+
+
+                ProjectActions.direct.insert({
+
+                    projectId: projectId,
+                    // milestoneId: milestoneIds[milestoneCounter] || null,
+                    gateId: gateId,
+                    milestone: (!!action.milestone),
+                    status: (s = action.status) ? s.toUpperCase() : Object.keys(Enums.ProjectActionsStatuses)[0],
+                    description: action.description,
+                    effort: (e = action.effort) ? parseFloat(e) : null,
+                    ownerId: _getUserIdByInitials(action.responsible),
+                    dueDate: _getDate(action.due_date),
+                    completedDate: _getDate(action.complete_date),
+                    progress: _getProgressFromStatus(action.status),
+                    _order: actionIndex
+
+                    // todo: io - should this be linked to outcomes?
+
+                });
+                actionIndex++
 
             })
 
         });
 
         Migration.updateCachedValues();
+
+    },
+
+    importTimesheetCsv(filename) {
+
+        csv()
+        .fromString( Assets.getText(`migration/${filename}`) )
+        .then(Meteor.bindEnvironment((data)=>{
+            console.log(`read in ${data.length} projects...`);
+
+            // find latest updated record in database
+            let latestImported = TimeEntrys.findOne({}, {sort: {_importIndex: -1}});
+            let latestImportedIndex = (latestImported && (latestImported._importIndex != null) && latestImported._importIndex) || -1;
+            console.log(`Importing time records from ${latestImportedIndex+1}...`);
+
+            let i, record, project;
+            for (i=latestImportedIndex+1; i<data.length; i++) {
+                record = data[i];
+
+                project = Projects.findOneByCode(record['Activity Code']);
+                if ( !project ) {
+                    console.log(`  > line ${i}: skipping time entry with Activity Code ${ record['Activity Code'] }`);
+                    continue
+                }
+
+                let date = _getDate(record.Date);
+                if ( !date ) {
+                    console.log(`  > line ${i}: ERROR: no date!`);
+                    continue
+                }
+                if ( isNaN(date.valueOf()) ) {
+                    console.log(`  > line ${i}: ERROR: invalid date!`);
+                    continue
+                }
+
+                if (!record.Hours) {
+                    console.log(`  > line ${i}: ERROR: no hours!`);
+                    continue
+                }
+
+                if ( isNaN(record.Hours) ) {
+                    console.log(`  > line ${i}: ERROR: hours is NaN!`);
+                    continue
+                }
+
+                // store time record
+                TimeEntrys.direct.insert({
+                    userId: _getUserIdByTimeRecord(record.Person),
+                    projectId: project._id,
+                    actionId: null,
+                    date: date,
+                    hours: record.Hours,
+                    description: record.Description || null,
+                    _importIndex: i
+                });
+            }
+
+        }));
 
     },
 
@@ -235,15 +319,18 @@ console.log(action.description);
 
 function _getDate(dateStr) {
     if (!dateStr) return null;
+    // TODO: more validation?
     return moment(dateStr, 'YYYY-MM-DD').toDate()
 }
 
-function _getUserIdByInitials(initialsStr) {
+function _getUserIdByInitials(initialsStr, skipCreation) {
     if (!initialsStr) return null;
 
     // trim white space and invalid characters
     initialsStr = initialsStr.replace('\r', '');
     initialsStr = initialsStr.replace('\n', '');
+    initialsStr = initialsStr.replace('(', '');
+    initialsStr = initialsStr.replace(')', '');
     initialsStr = initialsStr.trim()
 
     // pick first user if multiple are listed
@@ -258,15 +345,20 @@ function _getUserIdByInitials(initialsStr) {
     }, "");
 
     // special cases
-    if (initials.toUpperCase() === "MAH") initials = "MaH";
+    Opms_Exceptions.special_initials.forEach((special) => {
+        if (initials.toUpperCase() === special.toUpperCase()) initials = special;
+    });
 
-    // console.log('initials', initials, initialsStr);
-    
     // returns userId for mongo query (creating user if necessary)
     let user = Meteor.users.findOne({ initials });
 
     if (user) 
         return user._id;
+
+    if (skipCreation) {
+        console.log('ERROR: NO USER FOUND (and skipCreation is true)');
+        return;
+    }
 
     // no user found, need to create
     console.log("creating user", initials);
@@ -284,6 +376,20 @@ function _getUserIdByInitials(initialsStr) {
         }
     });
     return userId;
+}
+
+function _getUserIdByTimeRecord(personStr) {
+
+    let personStrArr = personStr.split(" ");
+    let initials = `${personStrArr[0][0]}${personStrArr[1][0]}`;
+    
+    // special cases
+    Opms_Exceptions.time_person_initials.forEach((tpi) => {
+        if (tpi.person == personStr) initials = tpi.initials;
+    });    
+
+    return _getUserIdByInitials(initials);
+
 }
 
 function _getProgressFromStatus(status) {

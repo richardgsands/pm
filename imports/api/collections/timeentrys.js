@@ -36,6 +36,13 @@ TimeEntrys.schema = new SimpleSchema({
     description: {
         type: String,
         optional: true
+    },
+
+    _importIndex: {
+        // index of csv row
+        type: Number,
+        autoform: false,
+        optional: true
     }
 
 });
