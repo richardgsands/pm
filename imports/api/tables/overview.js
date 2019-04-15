@@ -15,7 +15,9 @@ new Tabular.Table({
     ApiCommon.TabularGetColumn('code', 'Code'),
     ApiCommon.TabularGetColumn('name', 'Name'),
     {data: "getProjectManagerInitials()", title: "Project Manager"},
-    {data: "_effortWithChildren", title: "Planned Effort (days)"}
+    { data: '_effortWithChildrenByHalf.0.estimatedCompleted', title: 'H1 Estimated (Completed)' },              // TODO: don't hardcode H1!
+    { data: '_effortWithChildrenByHalf.0.estimatedTotal',     title: 'H1 Estimated (Total)'     },
+    { data: '_effortWithChildrenByHalf.0.actualLogged',       title: 'H1 Actual Logged'         },
   ],
   extraFields: [ "projectManagerId", "startDate" ]
 });
