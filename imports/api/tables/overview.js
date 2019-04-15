@@ -12,21 +12,10 @@ new Tabular.Table({
   collection: Projects,
   pub: "tabular_Projects",
   columns: [
-    ApiCommon.TabularGetColumn('priority', 'Pri'),
     ApiCommon.TabularGetColumn('code', 'Code'),
     ApiCommon.TabularGetColumn('name', 'Name'),
-    ApiCommon.TabularGetColumn('startDate', 'Plan Start', 'getStartDateHuman()'),
-    // {
-    //   data: "getStartDateHuman()", 
-    //   title: "Plan Start"
-    // },           // todo: use getStartDate() ?
-    // {data: "(d = startDate) ? d.toDateString()", title: "Plan Start"},           // todo: use getStartDate() ?
-    // {data: "startDate", title: "Plan Start"},           // todo: use getStartDate() ?
-    // {data: "completionDate", title: "Plan Complete"},   // todo: use getEndDate()   ?
-    {data: "projectManagerId", title: "Project Manager"},
-    // {data: "(o = this.getProjectManager()) ? o.displayInitials() : (No PM)", title: "Project Manager"},
-    // {data: "(o = this.getProjectManager()) ? o.displayInitials() : (No board)", title: "Project Board"},
-    {data: "_effortWithChildren", title: "Effort Days"}
+    {data: "getProjectManagerInitials()", title: "Project Manager"},
+    {data: "_effortWithChildren", title: "Planned Effort (days)"}
   ],
   extraFields: [ "projectManagerId", "startDate" ]
 });

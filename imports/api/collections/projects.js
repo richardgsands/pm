@@ -44,7 +44,7 @@ Projects.schema = new SimpleSchema({
         type: String,
         autoform: ApiCommon.AutoformProjectPickerDef({
             label: 'Parent project'
-        }),
+        }, "(No parent)"),
         optional: true
     },
     
@@ -63,6 +63,7 @@ Projects.schema = new SimpleSchema({
     department: {
         type: String,
         allowedValues: Object.keys(Projects.Departments),
+        optional: true
         // autoform: ApiCommon.AutoformHashPickerDef(Projects.Departments, { type: 'select-radio', template: 'buttonGroup' }),
     },
 

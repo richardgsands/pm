@@ -41,16 +41,18 @@ export default ApiCommon = {
         }, options);
     },
 
-    AutoformProjectPickerDef(options) {
+    AutoformProjectPickerDef(options, nullOption) {
         options = options || {};
 
         return _.extend({
             label: "Project Code",
             type: 'select2',
             options: function() {
-                return Projects.find({}).map(function(project) {
+                let list = Projects.find({}).map(function(project) {
                     return { label: `${project.code} (${project.name})`, value: project._id };
                 });
+                if (nullOption) list.unshift({ label: nullOption, value: "" });
+                return list;
             }
         }, options);
     },

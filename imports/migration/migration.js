@@ -296,6 +296,19 @@ console.log(action.description);
             }    
 
         });
+
+        // update any projects without a parent to be AOF1 (apart from other AOFs)
+        Projects.update({
+            code: { $nin: ["AOF1","AOF2","AOF3","AOF4","AOF5","AOF6","AOFX"] },
+            parentId: null
+        }, {
+            $set: {
+                parentId: Projects.findOneByCode('AOFX')._id
+            }
+        }, {
+            multi: true
+        });
+
     },
 
     updateCachedValues() {
