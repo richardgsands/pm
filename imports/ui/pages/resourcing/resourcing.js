@@ -25,7 +25,7 @@ Template.App_resourcing.events({
         if (!rowData) return; // if a placeholder row is clicked
 
         let user = Meteor.users.findOne(rowData._id);
-        FlowRouter.go('App.overview.user', {username: user.username});
+        FlowRouter.go('App.mytasks.user', {username: user.username});
     }
     
 

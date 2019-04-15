@@ -6,14 +6,14 @@ import ProjectActions from '/imports/api/collections/projectActions.js';
 import '/imports/api/tables/projects.js';
 import '/imports/ui/components/quickFormModal/quickFormModal.js';
 
-import './overview.html';
+import './mytasks.html';
 
-Template.App_overview.onCreated(function() {
+Template.App_mytasks.onCreated(function() {
 
     // subscriptions
     this.subscribe('projects.all');     // needed for insert form
 
-    if ( FlowRouter.getRouteName() === "App.overview.user" ) 
+    if ( FlowRouter.getRouteName() === "App.mytasks.user" ) 
     {
         this.getUsername = () => FlowRouter.getParam('username');
 
@@ -27,7 +27,7 @@ Template.App_overview.onCreated(function() {
             return user && [user._id];
         }
     }
-    else if ( FlowRouter.getRouteName() === "App.overview.department" ) 
+    else if ( FlowRouter.getRouteName() === "App.mytasks.department" ) 
     {
         this.getDepartment = () => FlowRouter.getParam('department');
 
@@ -44,11 +44,11 @@ Template.App_overview.onCreated(function() {
 
 });
 
-Template.App_overview.onRendered(function() {
+Template.App_mytasks.onRendered(function() {
 
 });
 
-Template.App_overview.helpers({
+Template.App_mytasks.helpers({
 
     user() {
         // todo: handle if department (instead of user)
@@ -122,7 +122,7 @@ Template.App_overview.helpers({
 
 });
 
-Template.App_overview.events({
+Template.App_mytasks.events({
 
     'click .js-table-row' (event, template) {
         FlowRouter.go('App.project.code', {code: event.currentTarget.dataset.projectCode}, {section: 'actions'});

@@ -1,9 +1,9 @@
-<template name="App_overview">
+<template name="App_mytasks">
 
-    <h1 class="page-header">Overview</h1>
+    <h1 class="page-header">My tasks</h1>
     <h2>{{user.displayName}}</h2>
 
-    <!-- <a href="{{pathFor 'App.overview.user.loggedInUser'}}">My tasks</a> | <a href="{{pathFor 'App.overview.department' department=currentUser.department}}">My department</a> -->
+    <!-- <a href="{{pathFor 'App.mytasks.user.loggedInUser'}}">My tasks</a> | <a href="{{pathFor 'App.mytasks.department' department=currentUser.department}}">My department</a> -->
 
     {{#if forLoggedInUser}}
     {{/if}}
@@ -30,14 +30,14 @@
                 </td>
                 {{#if actionsOverdue}}
                 <td>
-                    {{#each this.actionsOverdue}}{{> App_overview__project_action_text this}}{{/each}}
+                    {{#each this.actionsOverdue}}{{> App_mytasks__project_action_text this}}{{/each}}
                 </td>
                 {{/if}}
                 <td>
-                    {{#each this.actionsThisWeek}}{{> App_overview__project_action_text this}}{{/each}}
+                    {{#each this.actionsThisWeek}}{{> App_mytasks__project_action_text this}}{{/each}}
                 </td>
                 <td>
-                    {{#each this.actionsNextWeek}}{{> App_overview__project_action_text this}}{{/each}}
+                    {{#each this.actionsNextWeek}}{{> App_mytasks__project_action_text this}}{{/each}}
                 </td>
             </tr>
             {{/each}}
@@ -47,6 +47,6 @@
     
 </template>
 
-<template name="App_overview__project_action_text">
+<template name="App_mytasks__project_action_text">
     <p>({{this.status}}) {{this.description}}</p>
 </template>

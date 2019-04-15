@@ -6,7 +6,7 @@ import '../../ui/layouts/body/body.js';
 import '../../ui/pages/home/home.js';
 import '../../ui/pages/not-found/not-found.js';
 import '../../ui/pages/timesheet/timesheet';
-import '../../ui/pages/overview/overview';
+import '../../ui/pages/mytasks/mytasks';
 import '../../ui/pages/projects/projects.js';
 import '../../ui/pages/resourcing/resourcing.js';
 
@@ -74,26 +74,26 @@ privateRoutes.route('/resourcing', {
   }
 });
 
-// overview
+// my tasks
 
-privateRoutes.route('/overview', {
-  name: 'App.overview.user.loggedInUser',
+privateRoutes.route('/mytasks', {
+  name: 'App.mytasks.user.loggedInUser',
   action() {
-    FlowRouter.redirect(`/overview/user/${Meteor.user().username}`);
+    FlowRouter.redirect(`/mytasks/user/${Meteor.user().username}`);
   }
 });
 
-privateRoutes.route('/overview/user/:username', {
-  name: 'App.overview.user',
+privateRoutes.route('/mytasks/user/:username', {
+  name: 'App.mytasks.user',
   action() {
-    BlazeLayout.render('App_body', { main: 'App_overview' });
+    BlazeLayout.render('App_body', { main: 'App_mytasks' });
   }
 });
 
-privateRoutes.route('/overview/department/:department', {
-  name: 'App.overview.department',
+privateRoutes.route('/mytasks/department/:department', {
+  name: 'App.mytasks.department',
   action() {
-    BlazeLayout.render('App_body', { main: 'App_overview' });
+    BlazeLayout.render('App_body', { main: 'App_mytasks' });
   }
 });
 
