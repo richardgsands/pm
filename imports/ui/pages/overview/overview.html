@@ -1,6 +1,15 @@
 <template name="App_overview">
 
     <h1 class="page-header">Overview</h1>
+
+    <div class="breadcrumb">
+
+        <span class="label label-default js-breadcrumb">Everything</span>
+        {{#each breadcrumb}}
+        &nbsp;>&nbsp;<span class="label label-default js-breadcrumb" data-project-id="{{this._id}}">{{this.code}}</span>
+        {{/each}}
+    </div>
+
     {{> tabular table=TabularTables.Overview selector=tableSelector class="table table-striped table-bordered table-condensed"}}
 
 </template>
