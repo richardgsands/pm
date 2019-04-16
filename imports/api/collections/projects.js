@@ -378,6 +378,7 @@ Projects.findOneByCode = (code, selector, options) => Projects.findOne(  _.exten
 // server side functions
 
 if (Meteor.server) {
+    const DEBUG = false;
 
     Projects.updateCachedValuesForProject = (project) => {
         console.log(`Updating cached values for ${project.code}...`);
@@ -404,38 +405,46 @@ if (Meteor.server) {
                 $lt:  moment(half).add(6,'months').toDate(),    
             });
         });
+        if (DEBUG) console.log(` > project: _effort ${_effort}`);
+        if (DEBUG) console.log(` > project: _effortByHalf ${_effortByHalf[0].estimatedTotal}`);
+        if (DEBUG) console.log(` > project: _effortByHalf ${_effortByHalf[0].estimatedCompleted}`);
+        if (DEBUG) console.log(` > project: _effortByHalf ${_effortByHalf[0].actualLogged}`);
 
         // effort (with children)
 
         let _effortWithChildren = _effort;
-        let _effortWithChildrenByHalf = _effortByHalf;
+        let _effortWithChildrenByHalf = JSON.parse(JSON.stringify(_effortByHalf));    // deep clone
         project.getDescendentsAsArray().forEach((childProject) => {
-            if (childProject._effortWithChildren != null) {
-                _effortWithChildren += childProject._effortWithChildren;
+            if (childProject._effort != null) {
+                if (DEBUG) console.log(` > child project ${childProject.code}: _effort ${childProject._effort}`);
+                _effortWithChildren += childProject._effort;
             } else {
                 //TODO: handle error (do we need to?)
-                // throw new Meteor.Error(`_effortWithChildren not defined for ${childProject.code}`);
+                // throw new Meteor.Error(`_effort not defined for ${childProject.code}`);
             }
 
-            if (childProject._effortWithChildrenByHalf != null) {
+            if (childProject._effortByHalf != null) {
                 CACHE_HALFS.forEach((offset) => {
                     ['estimatedTotal', 'estimatedCompleted', 'actualLogged'].forEach((key) => {
-                        _effortWithChildrenByHalf[offset][key] += ( childProject._effortWithChildrenByHalf[offset] && childProject._effortWithChildrenByHalf[offset][key] ) || 0;
+                        if (DEBUG) console.log(` > child project ${childProject.code}: _effortByHalf ${[key]} ${childProject._effortByHalf[offset][key]}`);
+                        _effortWithChildrenByHalf[offset][key] += ( childProject._effortByHalf[offset] && childProject._effortByHalf[offset][key] ) || 0;
                     });
                 });
             } else {
                 //TODO: handle error (do we need to?)
-                // throw new Meteor.Error(`_effortWithChildrenByHalf not defined for ${childProject.code}`);
+                // throw new Meteor.Error(`_effortByHalf not defined for ${childProject.code}`);
             }
 
         });
 
-        
-
         // update project
         // TODO: check effect of skipping hooks (direct)
+        if (DEBUG) console.log(` > setting: _effort ${_effort}`);
+        if (DEBUG) console.log(` > setting: _effortByHalf ${_effortByHalf[0].estimatedTotal}`);
+        if (DEBUG) console.log(` > setting: _effortByHalf ${_effortByHalf[0].estimatedCompleted}`);
+        if (DEBUG) console.log(` > setting: _effortByHalf ${_effortByHalf[0].actualLogged}`);
         Projects.direct.update(project._id, {
-            $set: _.extend({ _effort, _effortWithChildren, _effortByHalf, _effortWithChildrenByHalf }, { })
+            $set: _.extend({ _effort, _effortWithChildren, _effortByHalf, _effortWithChildrenByHalf }, {})  
         });
 
         // update parents (recursive)
