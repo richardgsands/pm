@@ -174,12 +174,14 @@ Projects.schema = new SimpleSchema({
     _effortByHalf: {
         type: Object,
         blackbox: true,
+        optional: true
         // defaultValue: {}
     },
 
     _effortWithChildrenByHalf: {
         type: Object,
         blackbox: true,
+        optional: true
         // defaultValue: {}
     }
 
