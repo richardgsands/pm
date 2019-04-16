@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import moment from 'moment';
-import d3 from 'd3';
 
 import './overview.html';
 

@@ -14,10 +14,10 @@ new Tabular.Table({
   pub: "users.all",
   columns: [
     { data: 'initials', title: 'Initials' },
-    { data: '_effortByWeek.0.estimatedTotal', title: 'This week (total)' },
     { data: '_effortByWeek.0.estimatedTodo' , title: 'This week (todo)'  },
-    { data: '_effortByMonth.0.estimatedTotal', title: 'This month (total)' },
+    { data: '_effortByWeek.0.estimatedTotal', title: 'This week (total)' },
     { data: '_effortByMonth.0.estimatedTodo' , title: 'This month (todo)'  },
+    { data: '_effortByMonth.0.estimatedTotal', title: 'This month (total)' },
   ],
   // extraFields: [ "projectManagerId", "startDate" ]
 });
