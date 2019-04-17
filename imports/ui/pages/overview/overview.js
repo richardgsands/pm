@@ -45,7 +45,16 @@ Template.App_overview.events({
         var rowData = dataTable.row(event.currentTarget).data();
         if (!rowData) return; // if a placeholder row is clicked
 
-        template.selectedProjectId.set(rowData._id);
+        let project = Projects.findOne(rowData._id);
+        if ( project.getChildren().count() === 0 ) {
+            // open project if no children
+            FlowRouter.go('App.project.code', {code: project.code});
+        } else {
+            // open this project in overview
+            template.selectedProjectId.set(rowData._id);
+        }
+
+        
     },
 
     // breadcrumb
