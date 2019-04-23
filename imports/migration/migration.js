@@ -34,6 +34,7 @@ export default Migration = {
         data.projects
         // _.where(data.projects, {})
         .forEach(project => {
+
             // if (!project.name) {
             //     console.log('skipping project with no name...', project.code, project.name, project.priority, project.start_date);    
             //     return;
@@ -44,6 +45,10 @@ export default Migration = {
             Opms_Exceptions.owner.forEach((owner) => {
                 if (project.project_manager && project.project_manager.toUpperCase() == owner.find.toUpperCase()) project.project_manager = owner.replace
                 // TODO: project board
+            });
+
+            Opms_Exceptions.project_status.forEach((project_status) => {
+                if (project.current_status && project.current_status.toUpperCase() == project_status.find.toUpperCase()) project.current_status = project_status.replace
             });
 
             let projectId;
@@ -60,6 +65,7 @@ export default Migration = {
                         code: project.code,
                         name: project.name,
                         priority: (p = project.priority) ? parseInt(p) : null,
+                        status: project.current_status,
                         startDate: _getDate(project.start_date),
                         department: project.code.substr(0,2),
                         projectManagerId: _getUserIdByInitials(project.project_manager)
@@ -71,8 +77,20 @@ export default Migration = {
                 }
 
             } else {
-                console.log('  > project already exists, wiping and importing actions...');
+                console.log('  > project already exists, updating project, and wiping / importing actions...');
                 //TODO: upsert
+
+                Projects.update(projectId, {
+                    $set: {
+                        name: project.name,
+                        priority: (p = project.priority) ? parseInt(p) : null,
+                        status: project.current_status,
+                        startDate: _getDate(project.start_date),
+                        department: project.code.substr(0,2),
+                        projectManagerId: _getUserIdByInitials(project.project_manager)
+                    }
+                });
+
                 ProjectActions.remove({projectId});
             };
 
@@ -190,7 +208,7 @@ console.log(action.description);
         csv()
         .fromString( Assets.getText(`migration/${filename}`) )
         .then(Meteor.bindEnvironment((data)=>{
-            console.log(`read in ${data.length} projects...`);
+            console.log(`read in ${data.length} time records...`);
 
             // find latest updated record in database
             let latestImported = TimeEntrys.findOne({}, {sort: {_importIndex: -1}});

@@ -86,22 +86,45 @@ Meteor.users.updateCachedValuesForUser = (user) => {
 
 // helpers (todo: move somewhere else perhaps?)
 // TODO: duplicated in projects.js
-let getTotalsForDateRange = (user, dueDateSelector) => {
+let getTotalsForDateRange = (user, dateSelector) => {
     let estimatedTotal = 0;
-    let estimatedTodo = 0;
+    let estimatedCompleted = 0;
+    let actualLogged = 0;
 
     ProjectActions.find({
         ownerId: user._id,
-        // status: { $in: [ 'NS', 'IP' ] },
-        dueDate: dueDateSelector
+        $or: [
+            {
+                status: { $in: [ 'CO' ] },
+                completedDate: dateSelector    
+            },
+            {
+                status: { $nin: [ 'CO' ] },
+                dueDate: dateSelector
+            }
+        ]
     }).forEach((action) => {
-        // TODO: add 'OH'
+        // TODO: confirm 'OH' behaviour (and other statuses)
+        if (action.status =='OH')
+            return
+
+        if (action.status != 'CO' && action.getProject().status == 'OH')
+            return
+
         // TODO: switch to same format as projects.js
         estimatedTotal += action.effort || 0;
-        if (action.status == 'NS' || action.status == 'IP') {
-            estimatedTodo += action.effort || 0;
+        if (action.status == 'CO') {
+            estimatedCompleted += action.effort || 0;
         }
     });
 
-    return { estimatedTotal, estimatedTodo };
+    TimeEntrys.find({
+        userId: user._id,
+        date: dateSelector
+    }).forEach((timeentry) => {
+        // TODO: handle when more than 7.5 hours is logged in one day...
+        actualLogged += timeentry.hours / 7.5
+    });
+
+    return { estimatedTotal, estimatedCompleted, actualLogged };
 }

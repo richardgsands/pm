@@ -72,7 +72,8 @@ Template.App_mytasks.helpers({
 
         // get unique list of projects (sorted by code)
         let projects = Projects.find({ 
-            _id: { $in: _.keys(projectIdsSet) } 
+            _id: { $in: _.keys(projectIdsSet) },
+            status: { $nin: ['OH'] }            // TODO: confirm on hold (OH) behaviour
         }, {
             sort: { code: -1 }
         }).fetch();
@@ -85,34 +86,6 @@ Template.App_mytasks.helpers({
         });
 
         return projects;
-    },
-
-    weeklySummaryWithProjects() {
-        let actionsOverdue = getActionsOverdue();        
-        let actionsThisWeek = getActionsThisWeek();
-        let actionsNextWeek = getActionsNextWeek();
-
-        // get unique list of project ids
-        let projectIdsSet = {}
-        actionsOverdue.forEach((a) => { (projectIdsSet[a.projectId]) = true });
-        actionsThisWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
-        actionsNextWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
-
-        // get unique list of projects (sorted by code)
-        let projects = Projects.find({ 
-            _id: { $in: _.keys(projectIdsSet) } 
-        }, {
-            sort: { code: -1 }
-        }).fetch();
-
-        // set overdue, this week and next week tasks on projects (array)
-        projects.forEach((p) => {
-            p.actionsOverdue =  _.where(actionsOverdue.fetch(), { projectId: p._id });
-            p.actionsThisWeek =  _.where(actionsThisWeek.fetch(), { projectId: p._id });
-            p.actionsNextWeek =  _.where(actionsNextWeek.fetch(), { projectId: p._id });
-        });
-
-        return projects;        
     },
 
     forLoggedInUser() {

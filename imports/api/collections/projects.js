@@ -60,6 +60,14 @@ Projects.schema = new SimpleSchema({
         }
     },
 
+    status: {
+        type: String,
+        allowedValues: Object.keys(Enums.ProjectActionsStatuses),
+        autoform: ApiCommon.AutoformHashPickerDef(Enums.ProjectActionsStatuses, { type: 'select-radio', template: 'buttonGroup' }),
+        optional: true
+        //defaultValue: Object.keys(Enums.ProjectActionsStatuses)[0],
+    },
+
     department: {
         type: String,
         allowedValues: Object.keys(Projects.Departments),
@@ -92,6 +100,14 @@ Projects.schema = new SimpleSchema({
         autoform: ApiCommon.AutoformUserPickerDef(),
         optional: true,
         label: 'Project Manager'
+    },
+
+    // TODO: filter on TL
+    teamLeaderId: { 
+        type: String,
+        autoform: ApiCommon.AutoformUserPickerDef(),
+        optional: true,
+        label: 'Team Leader'
     },
 
     projectBoardIds: {
@@ -486,17 +502,31 @@ if (Meteor.server) {
 
 // helpers (todo: move somewhere else perhaps?)
 // TODO: duplicated in users.js
-let getTotalsForDateRange = (projectId, dueDateSelector) => {
+let getTotalsForDateRange = (projectId, dateSelector) => {
     let estimatedTotal = 0;
     let estimatedCompleted = 0;
     let actualLogged = 0;
 
     ProjectActions.find({
         projectId: projectId,
-        // status: { $in: [ 'NS', 'IP' ] },
-        dueDate: dueDateSelector
+        $or: [
+            {
+                status: { $in: [ 'CO' ] },
+                completedDate: dateSelector    
+            },
+            {
+                status: { $nin: [ 'CO' ] },
+                dueDate: dateSelector
+            }
+        ]
     }).forEach((action) => {
-        // TODO: add 'OH'
+        // TODO: confirm 'OH' behaviour (and other statuses)
+        if (action.status =='OH')
+            return
+
+        if (action.status != 'CO' && action.getProject().status == 'OH')
+            return
+
         estimatedTotal += action.effort || 0;
         if (action.status == 'CO') {
             estimatedCompleted += action.effort || 0;
@@ -505,7 +535,7 @@ let getTotalsForDateRange = (projectId, dueDateSelector) => {
 
     TimeEntrys.find({
         projectId: projectId,
-        date: dueDateSelector
+        date: dateSelector
     }).forEach((timeentry) => {
         // TODO: handle when more than 7.5 hours is logged in one day...
         actualLogged += timeentry.hours / 7.5

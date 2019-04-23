@@ -12,9 +12,11 @@ new Tabular.Table({
   collection: Projects,
   pub: "tabular_Projects",
   columns: [
-    ApiCommon.TabularGetColumn('priority', 'Pri'),
     ApiCommon.TabularGetColumn('code', 'Code'),
     ApiCommon.TabularGetColumn('name', 'Name'),
+    ApiCommon.TabularGetColumn('priority', 'Pri'),
+    ApiCommon.TabularGetColumn('status', 'Status'),
+    ApiCommon.TabularGetColumn('starred', 'Starred'),
     ApiCommon.TabularGetColumn('startDate', 'Plan Start', 'getStartDateHuman()'),
     // {
     //   data: "getStartDateHuman()", 
