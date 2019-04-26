@@ -49,7 +49,6 @@ dhtmlx:gantt
 konecty:mongo-counter
 rubaxa:sortable
 check                       # NB: required for rubaxa:sortable
-meteorich:autogrid
 viloma:user-feedback
 session
 jkuester:autoform-hint

@@ -68,7 +68,6 @@ logging@1.1.17
 matb33:collection-hooks@0.8.4
 meteor@1.8.0
 meteor-base@1.1.0
-meteorich:autogrid@0.0.1
 minifier-css@1.2.16
 minifier-js@2.1.1
 minimongo@1.2.1
