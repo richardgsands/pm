@@ -1,4 +1,7 @@
 node_modules/
+
+nohup.out
+
 private/migration/*
 !private/migration/example.json
 !private/migration/.opms_exceptions.json
