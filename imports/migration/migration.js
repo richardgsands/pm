@@ -211,12 +211,15 @@ console.log(action.description);
             console.log(`read in ${data.length} time records...`);
 
             // find latest updated record in database
-            let latestImported = TimeEntrys.findOne({}, {sort: {_importIndex: -1}});
-            let latestImportedIndex = (latestImported && (latestImported._importIndex != null) && latestImported._importIndex) || -1;
-            console.log(`Importing time records from ${latestImportedIndex+1}...`);
+//            let latestImported = TimeEntrys.findOne({}, {sort: {_importIndex: -1}});
+//            let latestImportedIndex = (latestImported && (latestImported._importIndex != null) && latestImported._importIndex) || -1;
+//            console.log(`Importing time records from ${latestImportedIndex+1}...`);
+
+            TimeEntrys.remove({});
 
             let i, record, project;
-            for (i=latestImportedIndex+1; i<data.length; i++) {
+            // for (i=latestImportedIndex+1; i<data.length; i++) {
+            for (i=0; i<data.length; i++) {
                 record = data[i];
 
                 project = Projects.findOneByCode(record['Activity Code']);
