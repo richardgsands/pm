@@ -5,6 +5,7 @@ import TimeEntrys from '/imports/api/collections/timeentrys.js';
 import ProjectActions from '/imports/api/collections/projectActions.js';
 import '/imports/api/tables/projects.js';
 import '/imports/ui/components/quickFormModal/quickFormModal.js';
+import '/imports/ui/components/timeline/timeline.js';
 
 import './mytasks.html';
 

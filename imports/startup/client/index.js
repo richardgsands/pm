@@ -6,3 +6,4 @@ import './accounts-ui.js'
 import './datatables';
 import './select2';
 import './autoform';
+import './vis';
