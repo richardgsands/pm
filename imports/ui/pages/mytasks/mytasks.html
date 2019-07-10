@@ -14,8 +14,8 @@
         <thead>
           <tr>
             <th scope="col">Project</th>
-            {{#if actionsOverdue}}
-            <th scope="col">Overdue</th>
+            {{#if actionsOverdueCount}}
+            <th scope="col">Overdue / No due date or effort</th>
             {{/if}}
             <th scope="col">This week</th>
             <th scope="col">Next week</th>
@@ -45,6 +45,10 @@
 
         </tbody>
       </table>
+
+      <!-- {{#each allActionsOutstanding}}
+        <p>{{this.description}} {{displayDate this.dueDate}}</p> 
+      {{/each}} -->
 
       {{> timeline}}
     

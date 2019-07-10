@@ -123,7 +123,7 @@ export default Migration = {
             // let milestoneCounter = 0;
             let gateReached = {};
             project.actions.forEach(action => {         // loop over all 'actions' (including milestones)
-console.log(action.description);
+                // console.log(action.description);
                 // if (action.milestone) {
                 //     milestoneCounter++;
                     
@@ -136,7 +136,7 @@ console.log(action.description);
                         gateId = `gate${g}`
                         if ( `Gate ${g}`.toUpperCase() == action.description.toUpperCase() || `G${g}`.toUpperCase() == action.description.toUpperCase() )
                             gateReached[g] = true;
-                        console.log(g, haveGate[g], gateReached[g]);
+                        // console.log(g, haveGate[g], gateReached[g]);
                         return true                 // returns true, so some loop will stop
                     }
 

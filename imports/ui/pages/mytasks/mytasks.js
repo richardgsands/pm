@@ -43,6 +43,8 @@ Template.App_mytasks.onCreated(function() {
         }        
     }
 
+    this.getAllActionsOutstanding = getAllActionsOutstanding;
+
 });
 
 Template.App_mytasks.onRendered(function() {
@@ -56,20 +58,24 @@ Template.App_mytasks.helpers({
         return Meteor.users.findOne({ username: Template.instance().getUsername() })
     },
 
-    actionsOverdue() {
-        return getActionsOverdue().count();
+    actionsOverdueCount() {
+        return (a = getActionsOverdue()) && a.count();
+    },
+
+    allActionsOutstanding() {
+        return getAllActionsOutstanding();
     },
 
     projectsWithWeeklySummary() {
-        let actionsOverdue = getActionsOverdue();        
+        let actionsOverdue =  getActionsOverdue();        
         let actionsThisWeek = getActionsThisWeek();
         let actionsNextWeek = getActionsNextWeek();
 
         // get unique list of project ids
         let projectIdsSet = {}
-        actionsOverdue.forEach((a) => { (projectIdsSet[a.projectId]) = true });
-        actionsThisWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
-        actionsNextWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
+        if (actionsOverdue)  actionsOverdue.forEach ((a) => { (projectIdsSet[a.projectId]) = true });
+        if (actionsThisWeek) actionsThisWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
+        if (actionsNextWeek) actionsNextWeek.forEach((a) => { (projectIdsSet[a.projectId]) = true });
 
         // get unique list of projects (sorted by code)
         let projects = Projects.find({ 
@@ -81,7 +87,7 @@ Template.App_mytasks.helpers({
 
         // set overdue, this week and next week tasks on projects (array)
         projects.forEach((p) => {
-            p.actionsOverdue =  _.where(actionsOverdue.fetch(), { projectId: p._id });
+            p.actionsOverdue =   _.where(actionsOverdue.fetch(),  { projectId: p._id });
             p.actionsThisWeek =  _.where(actionsThisWeek.fetch(), { projectId: p._id });
             p.actionsNextWeek =  _.where(actionsNextWeek.fetch(), { projectId: p._id });
         });
@@ -113,6 +119,11 @@ let getActionsOverdue = () => {
             ownerId: { $in: userIds },
             status: { $in: [ 'NS', 'IP' ] },
             dueDate: { $lt: moment().startOf('week').toDate() }
+        },
+        {
+            ownerId: { $in: userIds },
+            status: { $in: [ 'NS', 'IP' ] },
+            dueDate: null
         },
     ]});
 }
@@ -162,4 +173,17 @@ let getActionsNextWeek = () => {
         },
     ]});
     
+}
+
+let getAllActionsOutstanding = () => {
+    let userIds = Template.instance().closest('App_mytasks').getUserIds();
+    console.log('userIds', userIds);
+    if (!userIds) return;
+
+    return ProjectActions.find({$or: [
+        {
+            ownerId: { $in: userIds },
+            status: { $in: [ 'NS', 'IP' ] }
+        }
+    ]});    
 }
