@@ -80,7 +80,7 @@ privateRoutes.route('/resourcing', {
 privateRoutes.route('/mytasks', {
   name: 'App.mytasks.user.loggedInUser',
   action() {
-    FlowRouter.redirect(`/mytasks/user/${Meteor.user().username}`);
+    FlowRouter.redirect(`/mytasks/initials/${Meteor.user().initials}`);
   }
 });
 
@@ -91,7 +91,14 @@ privateRoutes.route('/mytasks/user/:username', {
   }
 });
 
-privateRoutes.route('/mytasks/department/:department', {
+privateRoutes.route('/mytasks/initials/:initials', {
+    name: 'App.mytasks.initials',
+    action() {
+      BlazeLayout.render('App_body', { main: 'App_mytasks' });
+    }
+  });
+  
+  privateRoutes.route('/mytasks/department/:department', {
   name: 'App.mytasks.department',
   action() {
     BlazeLayout.render('App_body', { main: 'App_mytasks' });

@@ -54,7 +54,11 @@ publishComposite('user.username.joins', function(username) {
   return userJoins(() => Meteor.users.find({ username }));
 });
 
-publishComposite('user.department.joins', function(department) {
+publishComposite('user.initials.joins', function(initials) {
+    return userJoins(() => Meteor.users.find({ initials }));
+  });
+  
+  publishComposite('user.department.joins', function(department) {
   return userJoins(() => Meteor.users.find({ department }));
 });
 

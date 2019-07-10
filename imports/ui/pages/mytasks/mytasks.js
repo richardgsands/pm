@@ -28,6 +28,20 @@ Template.App_mytasks.onCreated(function() {
             return user && [user._id];
         }
     }
+    else if ( FlowRouter.getRouteName() === "App.mytasks.initials" ) 
+    {
+        this.getInitials = () => FlowRouter.getParam('initials');
+
+        this.autorun(() => {
+            this.subscribe('user.initials.joins', this.getInitials())
+        });                
+
+        // nb: will not work until subscriptions ready
+        this.getUserIds = () => {
+            let user = Meteor.users.findOne({ initials: this.getInitials() });
+            return user && [user._id];
+        }
+    }    
     else if ( FlowRouter.getRouteName() === "App.mytasks.department" ) 
     {
         this.getDepartment = () => FlowRouter.getParam('department');

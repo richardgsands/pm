@@ -18,34 +18,48 @@ Template.timeline.onRendered(function(template) {
     this.autorun(() => {
 
         actions = Template.instance().closest('App_mytasks').getAllActionsOutstanding()
-        if (!actions) return
-        console.log('actions count', actions.count())
+        if (!actions)
+        {
+            container.innerHTML = "<p>Loading...</p>";
+        }
+        else if (actions.count() === 0) 
+        {
+            container.innerHTML = "<p>No actions with due dates / effort to display</p>";
+        }
+        else 
+        {
+            // debugger
+            let actionsWithDate = []
+            actions.forEach(a => {
+                if (!a.dueDate || 
+                    !a.effort)
 
-        // debugger
-        let actionsWithDate = []
-        actions.forEach(a => {
-            if (!a.dueDate || 
-                !a.effort)
+                    return
+                actionsWithDate.push(a);
+            })
 
+            if (actionsWithDate.length === 0) 
+            {
+                container.innerHTML = "<p>No actions with due dates / effort to display</p>";
                 return
-            actionsWithDate.push(a);
-        })
+            }
 
-        // Create a DataSet (allows two way data-binding)
-        var items = new vis.DataSet(actionsWithDate.map((a, i) => {
-            let end   = moment(a.dueDate).format('YYYY-MM-DD')
-            let start = moment(a.dueDate).add(-a.effort, 'd').format('YYYY-MM-DD')
-            return { 
-                id: i, 
-                content: a.description, 
-                title: a.description,
-                start, 
-                end} 
-        }))
+            // Create a DataSet (allows two way data-binding)
+            var items = new vis.DataSet(actionsWithDate.map((a, i) => {
+                let end   = moment(a.dueDate).format('YYYY-MM-DD')
+                let start = moment(a.dueDate).add(-a.effort, 'd').format('YYYY-MM-DD')
+                return { 
+                    id: i, 
+                    content: a.description, 
+                    title: a.description,
+                    start, 
+                    end} 
+            }))
 
-        // Create a Timeline
-        container.innerHTML = "";
-        var timeline = new vis.Timeline(container, items, options);
+            // Create a Timeline
+            container.innerHTML = "";
+            var timeline = new vis.Timeline(container, items, options);
+        } 
 
     });                
 
