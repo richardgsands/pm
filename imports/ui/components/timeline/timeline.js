@@ -1,10 +1,15 @@
 import './timeline.html';
 import moment from 'moment';
+import { Random } from 'meteor/random';
 
-Template.timeline.onRendered(function(template) {
+Template.timeline.onCreated(function() {
+    this.id = Random.id()
+})
+
+Template.timeline.onRendered(function() {
 
     // DOM element where the Timeline will be attached
-    var container = document.getElementById('visualization');
+    var container = document.getElementById(`visualization_${this.id}`);
 
     // Configuration for the Timeline
     var options = {
@@ -17,7 +22,7 @@ Template.timeline.onRendered(function(template) {
 
     this.autorun(() => {
 
-        actions = Template.instance().closest('App_mytasks').getAllActionsOutstanding()
+        actions = this.data.actions;
         if (!actions)
         {
             container.innerHTML = "<p>Loading...</p>";
@@ -28,6 +33,11 @@ Template.timeline.onRendered(function(template) {
         }
         else 
         {
+            // console.clear()
+            // actions.forEach(a => {
+            //     console.log(a.getProject().code, a.description, a.effort, a.dueDate);
+            // });
+
             // debugger
             let actionsWithDate = []
             actions.forEach(a => {
@@ -50,8 +60,8 @@ Template.timeline.onRendered(function(template) {
                 let start = moment(a.dueDate).add(-a.effort, 'd').format('YYYY-MM-DD')
                 return { 
                     id: i, 
-                    content: a.description, 
-                    title: a.description,
+                    content: `${a.getProject().code}: ${a.description}`, 
+                    title: `<b>${a.getProject().code}</b><br/><span>${a.description}</span>`,
                     start, 
                     end} 
             }))
@@ -80,5 +90,5 @@ Template.timeline.onRendered(function(template) {
 });
 
 Template.timeline.helpers({
-
+    id: () => Template.instance().id
 });

@@ -13,51 +13,56 @@ Template.App_mytasks.onCreated(function() {
 
     // subscriptions
     this.subscribe('projects.all');     // needed for insert form
+    this.subscribe('users.all');        
 
-    if ( FlowRouter.getRouteName() === "App.mytasks.user" ) 
-    {
-        this.getUsername = () => FlowRouter.getParam('username');
+    let template = this;
+    this.autorun(function() {
+        FlowRouter.watchPathChange();
 
-        this.autorun(() => {
-            this.subscribe('user.username.joins', this.getUsername())
-        });                
-
-        // nb: will not work until subscriptions ready
-        this.getUserIds = () => {
-            let user = Meteor.users.findOne({ username: this.getUsername() });
-            return user && [user._id];
+        if ( FlowRouter.getRouteName() === "App.mytasks.user" ) 
+        {
+            template.getUsername = () => FlowRouter.getParam('username');
+    
+            template.autorun(() => {
+                template.subscribe('user.username.joins', template.getUsername())
+            });                
+    
+            // nb: will not work until subscriptions ready
+            template.getUserIds = () => {
+                let user = Meteor.users.findOne({ username: template.getUsername() });
+                return user && [user._id];
+            }
         }
-    }
-    else if ( FlowRouter.getRouteName() === "App.mytasks.initials" ) 
-    {
-        this.getInitials = () => FlowRouter.getParam('initials');
-
-        this.autorun(() => {
-            this.subscribe('user.initials.joins', this.getInitials())
-        });                
-
-        // nb: will not work until subscriptions ready
-        this.getUserIds = () => {
-            let user = Meteor.users.findOne({ initials: this.getInitials() });
-            return user && [user._id];
+        else if ( FlowRouter.getRouteName() === "App.mytasks.initials" ) 
+        {
+            template.getInitials = () => FlowRouter.getParam('initials');
+    
+            template.autorun(() => {
+                template.subscribe('user.initials.joins', template.getInitials())
+            });                
+    
+            // nb: will not work until subscriptions ready
+            template.getUserIds = () => {
+                let user = Meteor.users.findOne({ initials: template.getInitials() });
+                return user && [user._id];
+            }
+        }    
+        else if ( FlowRouter.getRouteName() === "App.mytasks.department" ) 
+        {
+            template.getDepartment = () => FlowRouter.getParam('department');
+    
+            template.autorun(() => {
+                template.subscribe('user.department.joins', template.getDepartment())
+            });                
+    
+            // nb: will not work until subscriptions ready
+            template.getUserIds = () => {
+                // TODO: let userIds = Meteor.users.find({ department: template.getDepartment() }).map((user) => user._id);
+                let userIds = Meteor.users.find({ initials: { $in: ['HH', 'JW', 'AP', 'RS', 'EF', 'SM', 'MH', 'CLa', 'MS'] } }).map((user) => user._id);
+                return userIds;
+            }        
         }
-    }    
-    else if ( FlowRouter.getRouteName() === "App.mytasks.department" ) 
-    {
-        this.getDepartment = () => FlowRouter.getParam('department');
-
-        this.autorun(() => {
-            this.subscribe('user.department.joins', this.getDepartment())
-        });                
-
-        // nb: will not work until subscriptions ready
-        this.getUserIds = () => {
-            let userIds = Meteor.users.find({ department: this.getDepartment() }).map((user) => user._id);
-            return userIds;
-        }        
-    }
-
-    this.getAllActionsOutstanding = getAllActionsOutstanding;
+    });
 
 });
 
@@ -69,15 +74,29 @@ Template.App_mytasks.helpers({
 
     user() {
         // todo: handle if department (instead of user)
-        return Meteor.users.findOne({ username: Template.instance().getUsername() })
+
+        let user = Template.instance().getUsername && Template.instance().getUsername();
+        if (!user)
+            return;
+
+        return Meteor.users.findOne({ username: Template.instance().getUsername() });
+    },
+
+    users() {
+        let userIds = Template.instance().getUserIds();
+        return Meteor.users.find({_id: { $in: userIds }});
     },
 
     actionsOverdueCount() {
         return (a = getActionsOverdue()) && a.count();
     },
 
-    allActionsOutstanding() {
+    actionsOutstanding() {
         return getAllActionsOutstanding();
+    },
+
+    actionsOutstandingForUser(user) {
+        return getAllActionsOutstanding(user);
     },
 
     projectsWithWeeklySummary() {
@@ -156,11 +175,11 @@ let getActionsThisWeek = () => {
                 $lt:  moment().startOf('week').add(7,'d').toDate() 
             }
         },
-        {
-            ownerId: { $in: userIds },
-            status: { $in: [ 'CO' ] },
-            completedDate: { $gte: moment().startOf('week').add(0,'d').toDate() },
-        },
+        // {    TODO: figure out why loads of completed showing for AE
+        //     ownerId: { $in: userIds },
+        //     status: { $in: [ 'CO' ] },
+        //     completedDate: { $gte: moment().startOf('week').add(0,'d').toDate() },
+        // },
     ]});
 }
 
@@ -177,22 +196,30 @@ let getActionsNextWeek = () => {
                 $lt:  moment().startOf('week').add(14,'d').toDate() 
             }
         },
-        {
-            ownerId: { $in: userIds },
-            status: { $in: [ 'CO' ] },
-            completedDate: { 
-                $gte: moment().startOf('week').add(7, 'd').toDate(),
-                $lt:  moment().startOf('week').add(14,'d').toDate() 
-            }
-        },
+        // {    TODO: figure out why loads of completed showing for AE
+        //     ownerId: { $in: userIds },
+        //     status: { $in: [ 'CO' ] },
+        //     completedDate: { 
+        //         $gte: moment().startOf('week').add(7, 'd').toDate(),
+        //         $lt:  moment().startOf('week').add(14,'d').toDate() 
+        //     }
+        // },
     ]});
     
 }
 
-let getAllActionsOutstanding = () => {
-    let userIds = Template.instance().closest('App_mytasks').getUserIds();
-    console.log('userIds', userIds);
-    if (!userIds) return;
+let getAllActionsOutstanding = (user) => {
+    let userIds;
+    if (user)
+    {
+        userIds = [user._id]
+    }
+    else
+    {
+        let userIds = Template.instance().closest('App_mytasks').getUserIds();
+        console.log('userIds', userIds);
+        if (!userIds) return;    
+    }
 
     return ProjectActions.find({$or: [
         {

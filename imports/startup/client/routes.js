@@ -96,9 +96,18 @@ privateRoutes.route('/mytasks/initials/:initials', {
     action() {
       BlazeLayout.render('App_body', { main: 'App_mytasks' });
     }
-  });
+});
   
-  privateRoutes.route('/mytasks/department/:department', {
+privateRoutes.route('/mytasks/department', {
+    name: 'App.mytasks.department.loggedInUser',
+    action() {
+        FlowRouter.redirect(`/mytasks/department/AE`);
+        // todo:
+        // FlowRouter.redirect(`/mytasks/department/${Meteor.user().department}`);
+    }
+});
+
+privateRoutes.route('/mytasks/department/:department', {
   name: 'App.mytasks.department',
   action() {
     BlazeLayout.render('App_body', { main: 'App_mytasks' });

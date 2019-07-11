@@ -3,12 +3,18 @@
     <h1 class="page-header">My tasks</h1>
     <h2>{{user.displayName}}</h2>
 
-    <!-- <a href="{{pathFor 'App.mytasks.user.loggedInUser'}}">My tasks</a> | <a href="{{pathFor 'App.mytasks.department' department=currentUser.department}}">My department</a> -->
+    <div class="breadcrumb">
+        <a href="{{pathFor 'App.mytasks.user.loggedInUser'}}">My tasks</a> | <a href="{{pathFor 'App.mytasks.department.loggedInUser'}}">My department</a>
+    </div>
 
     {{#if forLoggedInUser}}
     {{/if}}
 
-    <p>Not including OH (on hold) projects or tasks (apart from completed tasks)</p>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            Not including OH (on hold) or CO (completed) projects
+        </div>
+    </div>
 
     <table class="table">
         <thead>
@@ -44,13 +50,23 @@
             {{/each}}
 
         </tbody>
-      </table>
+    </table>
 
-      <!-- {{#each allActionsOutstanding}}
+    <!-- {{#each allActionsOutstanding}}
         <p>{{this.description}} {{displayDate this.dueDate}}</p> 
-      {{/each}} -->
+    {{/each}} -->
 
-      {{> timeline}}
+    {{#each users}}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Outstanding actions for {{this.displayName}}
+            </div>
+            <div class="panel-body">
+                {{ > timeline actions=(actionsOutstandingForUser this) }}
+            </div>
+        </div>
+    {{/each}}
+
     
 </template>
 
