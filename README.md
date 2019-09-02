@@ -1,5 +1,7 @@
 # oxts-pm
 
+A web-based project management system. (Some dependencies may contain vulnerabilities, so this app should not be deployed to open networks until these are updated. Note this repository contains no sensitive content.)
+
 ### Getting started (only need to do this once)
 
 In the project directory, run:
