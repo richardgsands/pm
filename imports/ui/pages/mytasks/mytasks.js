@@ -158,11 +158,13 @@ let getActionsOverdue = () => {
         {
             ownerId: { $in: userIds },
             status: { $in: [ 'NS', 'IP' ] },
+            _projectStatus: { $nin: ['OH', 'CO'] },
             dueDate: { $lt: moment().startOf('week').toDate() }
         },
         {
             ownerId: { $in: userIds },
             status: { $in: [ 'NS', 'IP' ] },
+            _projectStatus: { $nin: ['OH', 'CO'] },
             dueDate: null
         },
     ]});
@@ -176,13 +178,20 @@ let getActionsThisWeek = () => {
     return ProjectActions.find({$or: [
         {
             ownerId: { $in: userIds },
-            status: { $in: [ 'NS', 'IP' ] },
+            status: { $in: [ 'NS' ] },
+            _projectStatus: { $nin: ['OH', 'CO'] },
             dueDate: { 
                 $gte: moment().startOf('week').add(0,'d').toDate(),
                 $lt:  moment().startOf('week').add(7,'d').toDate() 
             }
         },
-        // {    TODO: figure out why loads of completed showing for AE
+        {
+            ownerId: { $in: userIds },
+            status: { $in: [ 'IP' ] },
+            _projectStatus: { $nin: ['OH', 'CO'] }
+        },
+        // {    
+        //     TODO: figure out why loads of completed showing for AE
         //     ownerId: { $in: userIds },
         //     status: { $in: [ 'CO' ] },
         //     completedDate: { $gte: moment().startOf('week').add(0,'d').toDate() },
@@ -198,6 +207,7 @@ let getActionsNextWeek = () => {
         {
             ownerId: { $in: userIds },
             status: { $in: [ 'NS', 'IP' ] },
+            _projectStatus: { $nin: ['OH', 'CO'] },
             dueDate: { 
                 $gte: moment().startOf('week').add(7, 'd').toDate(),
                 $lt:  moment().startOf('week').add(14,'d').toDate() 
@@ -231,7 +241,8 @@ let getAllActionsOutstanding = (user) => {
     return ProjectActions.find({$or: [
         {
             ownerId: { $in: userIds },
-            status: { $in: [ 'NS', 'IP' ] }
+            status: { $in: [ 'NS', 'IP' ] },
+            _projectStatus: { $nin: ['OH', 'CO'] },
         }
     ]});    
 }
