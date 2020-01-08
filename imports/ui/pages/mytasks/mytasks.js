@@ -10,12 +10,16 @@ import '/imports/ui/components/timeline/timeline.js';
 import './mytasks.html';
 
 Template.App_mytasks.onCreated(function() {
+    console.log('mytasks created')
 
     // subscriptions
     this.subscribe('projects.all');     // needed for insert form
     this.subscribe('users.all');        
 
     let template = this;
+    this.username = new ReactiveVar
+    this.userIds = new ReactiveVar([]);
+
     // initialise with default function
     template.getUserIds = () => {
         return [];
@@ -23,6 +27,7 @@ Template.App_mytasks.onCreated(function() {
 
     this.autorun(function() {
         FlowRouter.watchPathChange();
+        console.log('mytasks autorun')
 
         if ( FlowRouter.getRouteName() === "App.mytasks.user.loggedInUser" )
         {
@@ -83,6 +88,7 @@ Template.App_mytasks.helpers({
 
     user() {
         // todo: handle if department (instead of user)
+        FlowRouter.watchPathChange();
 
         let user = Template.instance().getUsername && Template.instance().getUsername();
         if (!user)
@@ -92,6 +98,7 @@ Template.App_mytasks.helpers({
     },
 
     users() {
+        FlowRouter.watchPathChange();
         let userIds = Template.instance().getUserIds();
         if (!userIds) 
             return [];
@@ -99,18 +106,23 @@ Template.App_mytasks.helpers({
     },
 
     actionsOverdueCount() {
+        console.log('actionsOverdueCount')
+        FlowRouter.watchPathChange();
         return (a = getActionsOverdue()) && a.count();
     },
 
     actionsOutstanding() {
+        FlowRouter.watchPathChange();
         return getAllActionsOutstanding();
     },
 
     actionsOutstandingForUser(user) {
+        FlowRouter.watchPathChange();
         return getAllActionsOutstanding(user);
     },
 
     projectsWithWeeklySummary() {
+        FlowRouter.watchPathChange();
         let actionsOverdue =  getActionsOverdue();        
         let actionsThisWeek = getActionsThisWeek();
         let actionsNextWeek = getActionsNextWeek();

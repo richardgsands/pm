@@ -28,9 +28,13 @@ function checkLoggedIn (ctx, redirect) {
 
 function redirectIfLoggedIn (ctx, redirect) {  
   if (Meteor.userId()) {
-    redirect('/projects');
+    redirect('/mytasks');
   }
 }
+
+FlowRouter.subscriptions = function() {
+    this.register('users', Meteor.subscribe('users.all'));
+};
 
 // Set up all routes in the app
 FlowRouter.route('/', {
@@ -48,7 +52,7 @@ FlowRouter.notFound = {
 
 Accounts.onLogin(function () {  
   if ( !FlowRouter.current().route.group ) {
-    FlowRouter.go('/projects');
+    FlowRouter.go('/mytasks');
   }
 });
 Accounts.onLogout(function () {  
@@ -80,7 +84,7 @@ privateRoutes.route('/resourcing', {
 privateRoutes.route('/mytasks', {
   name: 'App.mytasks.user.loggedInUser',
   action() {
-    FlowRouter.redirect(`/mytasks/initials/${Meteor.user().initials}`);
+    BlazeLayout.render('App_body', { main: 'App_mytasks' });
   }
 });
 
