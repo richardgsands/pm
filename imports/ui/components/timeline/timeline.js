@@ -56,8 +56,10 @@ Template.timeline.onRendered(function() {
 
             // Create a DataSet (allows two way data-binding)
             var items = new vis.DataSet(actionsWithDate.map((a, i) => {
-                let end   = moment(a.dueDate).format('YYYY-MM-DD')
-                let start = moment(a.dueDate).add(-a.effort, 'd').format('YYYY-MM-DD')
+                let effort = Math.ceil(a.effort);
+
+                let end   = moment(a.dueDate).add(1, 'd').format('YYYY-MM-DD')
+                let start = moment(a.dueDate).add(-effort+1, 'd').format('YYYY-MM-DD')
                 return { 
                     id: i, 
                     content: `${a.getProject().code}: ${a.description}`, 
