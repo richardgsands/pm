@@ -16,6 +16,11 @@ Template.App_mytasks.onCreated(function() {
     this.subscribe('users.all');        
 
     let template = this;
+    // initialise with default function
+    template.getUserIds = () => {
+        return [];
+    }
+
     this.autorun(function() {
         FlowRouter.watchPathChange();
 
