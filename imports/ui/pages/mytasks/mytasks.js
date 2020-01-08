@@ -24,7 +24,11 @@ Template.App_mytasks.onCreated(function() {
     this.autorun(function() {
         FlowRouter.watchPathChange();
 
-        if ( FlowRouter.getRouteName() === "App.mytasks.user" ) 
+        if ( FlowRouter.getRouteName() === "App.mytasks.user.loggedInUser" )
+        {
+            FlowRouter.redirect(`/mytasks/initials/${Meteor.user().initials}`);
+        }
+        else if ( FlowRouter.getRouteName() === "App.mytasks.user" ) 
         {
             template.getUsername = () => FlowRouter.getParam('username');
     
