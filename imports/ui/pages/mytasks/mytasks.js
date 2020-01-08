@@ -84,6 +84,8 @@ Template.App_mytasks.helpers({
 
     users() {
         let userIds = Template.instance().getUserIds();
+        if (!userIds) 
+            return [];
         return Meteor.users.find({_id: { $in: userIds }});
     },
 
