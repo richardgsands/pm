@@ -15,6 +15,7 @@ new Tabular.Table({
   name: "Overview",
   collection: Projects,
   pub: "tabular_Projects",
+  order: [[0, "asc"]],
   columns: [
     ApiCommon.TabularGetColumn('code', 'Code'),
     ApiCommon.TabularGetColumn('name', 'Name'),

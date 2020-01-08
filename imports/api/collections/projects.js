@@ -48,6 +48,11 @@ Projects.schema = new SimpleSchema({
         optional: true
     },
     
+    newField: {
+        type: String,
+        optional: true
+    },
+
     code: {
         type: String,
         unique: true
@@ -64,8 +69,8 @@ Projects.schema = new SimpleSchema({
         type: String,
         allowedValues: Object.keys(Enums.ProjectActionsStatuses),
         autoform: ApiCommon.AutoformHashPickerDef(Enums.ProjectActionsStatuses, { type: 'select-radio', template: 'buttonGroup' }),
-        optional: true
-        //defaultValue: Object.keys(Enums.ProjectActionsStatuses)[0],
+        optional: true  // TODO
+        // defaultValue: Object.keys(Enums.ProjectActionsStatuses)[0],
     },
 
     department: {
@@ -472,7 +477,17 @@ if (Meteor.server) {
 
     }
 
-
+    Projects.updateActionsCachedStatus = (project_doc) => {
+        ProjectActions.direct.update({
+            projectId: project_doc._id
+        }, {
+            $set: { 
+                _projectStatus: project_doc.status || "IP"      // TODO
+            }
+        }, {
+            multi: true
+        });
+    }
 
     // hooks
 
@@ -490,6 +505,10 @@ if (Meteor.server) {
 
         console.log(`Project ${doc.code} updated!`);
         Projects.updateCachedValuesForProject( Projects.findOne(doc._id) );     // need to call findOne, as doc in mongo doc without helpers
+
+        if ( _.contains(fieldNames, 'status') ) {
+            Projects.updateActionsCachedStatus(doc);
+        }
 
     }, {fetchPrevious: false});
 

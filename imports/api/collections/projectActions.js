@@ -93,6 +93,11 @@ ProjectActions.schema = new SimpleSchema({
                 return ++count;
             }
         }
+    },
+
+    _projectStatus: {
+        type: String,
+        optional: true  // TODO
     }
 
 });
@@ -111,6 +116,10 @@ let updateCachedValues = (userId, doc) => {
 
 ProjectActions.after.update(updateCachedValues);
 ProjectActions.after.insert(updateCachedValues);
+
+ProjectActions.before.insert((userId, doc) => {
+    doc._projectStatus = Projects.findOne(doc.projectId).status || "IP";    // TODO
+});
 
 ProjectActions.helpers({
 

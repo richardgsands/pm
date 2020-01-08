@@ -34,6 +34,7 @@ export default Migration = {
         data.projects
         // _.where(data.projects, {})
         .forEach(project => {
+            console.log(project.code);
 
             // if (!project.name) {
             //     console.log('skipping project with no name...', project.code, project.name, project.priority, project.start_date);    
@@ -50,6 +51,8 @@ export default Migration = {
             Opms_Exceptions.project_status.forEach((project_status) => {
                 if (project.current_status && project.current_status.toUpperCase() == project_status.find.toUpperCase()) project.current_status = project_status.replace
             });
+
+            if (!project.current_status) project.current_status = "IP"
 
             let projectId;
             {
@@ -336,6 +339,8 @@ export default Migration = {
 
         // update all projects at bottom of tree (which should in turn update their parents)
         Projects.find().forEach((project) => {
+            Projects.updateActionsCachedStatus(project);
+            
             if ( project.getChildren().count() == 0 ) {
                 Projects.updateCachedValuesForProject(project);
             }
