@@ -4,10 +4,31 @@ import ProjectGates   from '/imports/api/collections/projectGates.js';
 import './project_actions.html';
 
 Template.project_actions.onCreated(function() {
-    this.subscribe('projectsActions.all');
+    const sub_actions = this.subscribe('projectsActions.all');
 
     this.selectedGate  = new ReactiveVar("gate1");
     this.showChecklist = new ReactiveVar(false);
+
+    // project subscription should already be set by now
+    let project = Projects.findOne(Template.instance().data._id);
+
+    this.autorun(() => {
+        if (sub_actions.ready()) {
+            console.log('> subs ready (actions)')
+            // move to first gate with tasks
+            for (i=1; i<=4; ++i) {
+                let gateId = `gate${i}`;
+                if ( project.getActions({ gateId }).count() ) {
+                    this.selectedGate.set(gateId);
+                    break;
+                }
+            }
+        }    
+    });
+});
+
+Template.project_actions.onRendered(function() {
+    
 });
 
 Template.project_actions.helpers({
