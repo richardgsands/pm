@@ -46,6 +46,8 @@ export default Migration = {
         data.projects
         // _.where(data.projects, {})
         .forEach(project => {
+            if (project.code == "TEMPLATES") return;
+
             console.log(project.code);
 
             // if (!project.name) {
