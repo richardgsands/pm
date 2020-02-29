@@ -31,7 +31,17 @@ Template.App_mytasks.onCreated(function() {
 
         if ( FlowRouter.getRouteName() === "App.mytasks.user.loggedInUser" )
         {
-            FlowRouter.redirect(`/mytasks/initials/${Meteor.user().initials}`);
+            if ( !Meteor.user() ) {
+                console.log('Meteor.user()', Meteor.user())
+                // need to wait for subscription to load - massive hack for now...
+                Meteor.setTimeout(function() {
+                    console.log('timeout');
+                    FlowRouter.redirect(`/mytasks/initials/${Meteor.user().initials}`);
+                }, 2000);
+                return
+            } else {
+                FlowRouter.redirect(`/mytasks/initials/${Meteor.user().initials}`);
+            }
         }
         else if ( FlowRouter.getRouteName() === "App.mytasks.user" ) 
         {
@@ -88,7 +98,7 @@ Template.App_mytasks.helpers({
 
     user() {
         // todo: handle if department (instead of user)
-        FlowRouter.watchPathChange();
+        //FlowRouter.watchPathChange();
 
         let user = Template.instance().getUsername && Template.instance().getUsername();
         if (!user)
@@ -98,7 +108,7 @@ Template.App_mytasks.helpers({
     },
 
     users() {
-        FlowRouter.watchPathChange();
+        //FlowRouter.watchPathChange();
         let userIds = Template.instance().getUserIds();
         if (!userIds) 
             return [];
@@ -107,22 +117,22 @@ Template.App_mytasks.helpers({
 
     actionsOverdueCount() {
         console.log('actionsOverdueCount')
-        FlowRouter.watchPathChange();
+        //FlowRouter.watchPathChange();
         return (a = getActionsOverdue()) && a.count();
     },
 
     actionsOutstanding() {
-        FlowRouter.watchPathChange();
+        //FlowRouter.watchPathChange();
         return getAllActionsOutstanding();
     },
 
     actionsOutstandingForUser(user) {
-        FlowRouter.watchPathChange();
+        //FlowRouter.watchPathChange();
         return getAllActionsOutstanding(user);
     },
 
     projectsWithWeeklySummary() {
-        FlowRouter.watchPathChange();
+        //FlowRouter.watchPathChange();
         let actionsOverdue =  getActionsOverdue();        
         let actionsThisWeek = getActionsThisWeek();
         let actionsNextWeek = getActionsNextWeek();
@@ -152,7 +162,7 @@ Template.App_mytasks.helpers({
     },
 
     forLoggedInUser() {
-        FlowRouter.watchPathChange();
+        //FlowRouter.watchPathChange();
         return FlowRouter.getParam('username') === ( Meteor.user() && Meteor.user().username );
     },
 
@@ -169,6 +179,8 @@ Template.App_mytasks.events({
 let getActionsOverdue = () => {
     let userIds = Template.instance().getUserIds();
     if (!userIds) return;
+
+    console.log(userIds);
 
     return ProjectActions.find({$or: [
         {

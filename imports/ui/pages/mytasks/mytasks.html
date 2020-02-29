@@ -16,6 +16,8 @@
         </div>
     </div>
 
+    {{#if Template.subscriptionsReady}}
+
     <table class="table">
         <thead>
           <tr>
@@ -67,6 +69,11 @@
         </div>
     {{/each}}
 
+    {{else}}
+
+        <div class="center-block margin-top">{{> spinner}}</div>
+
+    {{/if}}
     
 </template>
 

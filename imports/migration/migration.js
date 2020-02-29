@@ -12,11 +12,23 @@ let Opms_Exceptions = JSON.parse( Assets.getText('migration/opms_exceptions.json
 
 export default Migration = {
 
+    clearAll(checkStr) {
+        if ( !_safetyCheck(checkStr) ) return;
+
+        ProjectActions.remove({});
+        ProjectGates.remove({});
+        Projects.remove({});
+        TimeEntrys.remove({});
+        Meteor.users.remove({});
+
+        console.log('All projects, timeentrys and users removed.');
+    },
+
     clearAllProjects(checkStr) {
         if ( !_safetyCheck(checkStr) ) return;
 
         ProjectActions.remove({});
-        // ProjectMilestones.remove({});
+        ProjectGates.remove({});
         Projects.remove({});
 
         console.log('All projects removed.');
@@ -271,6 +283,48 @@ export default Migration = {
     import(filename) {
         let data = JSON.parse( Assets.getText(`migration/${filename}`) );
 
+        console.log(`importing ${data.users.length} users...`);
+        data.users
+        .forEach(user => {
+
+            existingUser = Meteor.users.findOne({ initials: user.initials });
+
+            if (!existingUser) {
+
+                let userId = Accounts.createUser({
+                    username: user.username,
+                    // nb: ** profile is used in onCreateUser to add fields as top-level **
+                    profile: { 
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        initials: user.initials,
+                        department: user.department
+                    }
+                });
+                // todo: remove once invitation flow is set up, but fine for a PoC internal system
+                Accounts.setPassword(userId, Meteor.settings.defaultPassword);
+                console.log(`  > created user: ${user.initials}, ${user.username}`);
+
+            } else {
+
+                if (existingUser.username !== user.username) {
+                    console.log(`  > ERROR: user to import with initials ${user.initials} and username ${user.username} exists in database with username ${existingUser.username} - skipping`);
+                    return
+                }
+
+                console.log(`  > updating user: ${user.initials}, ${user.username}`);
+                Meteor.users.update(user._id, {
+                    $set: {
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        department: user.department
+                    }
+                });
+
+            }
+
+        });
+
         console.log(`importing ${data.projects.length} projects...`);
         data.projects
         .forEach(project => {
@@ -399,19 +453,16 @@ function _getUserIdByInitials(initialsStr, skipCreation) {
         return;
     }
 
-    // no user found, need to create
+    // no user found, need to create - this will be a dummy user without password
+    // TODO: could remove this, and require users to be created in import file
     console.log("creating user", initials);
     let userId = Accounts.createUser({
         username: initials,
         // todo: import username like rsands, etc (look up from json file)
         // todo: import email (look up from json file)
-        // nb: profile is used in onCreateUser to add fields as top-level
+        // nb: ** profile is used in onCreateUser to add fields as top-level **
         profile: { 
-            initials: initials ,
-            // todo: firstName (look up from json file)
-            // todo: lastName (look up from json file)
-            // todo: departmemnt (look up from json file)
-            department: "AE"
+            initials: initials
         }
     });
     return userId;
