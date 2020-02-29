@@ -25,9 +25,15 @@ Template.autoFormInput.helpers({
 
 Template.autoFormInput.events({
 
-    'click *, focus *'(event, template) {
+    'click .editable, focus .editable': function(event, template) {
         console.log('click');
         template.editing.set(true);
+    },
+
+    // TODO: this may need to be done at higher level for better UX
+    'blur .editable': function(event, template) {
+        console.log('unclick');
+        template.editing.set(false);
     }
 
 });

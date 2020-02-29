@@ -9,13 +9,17 @@
 
     {{else}}
 
-        {{#if editing}}
-            {{#autoForm collection="Projects" id=autoformId type="update" doc=doc}}
-                {{ > afFieldInput name=data }}
-            {{/autoForm}}
-        {{else}}
-            {{displayValue}}
-        {{/if}}
+        <div class="editable">
+
+            {{#if editing}}
+                {{#autoForm collection="Projects" id=autoformId type="update" doc=doc}}
+                    {{ > afFieldInput name=data }}
+                {{/autoForm}}
+            {{else}}
+                <span>{{displayValue}}</span>
+            {{/if}}
+
+        </div>
 
     {{/if}}
 

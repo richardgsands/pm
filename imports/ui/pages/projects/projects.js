@@ -24,13 +24,13 @@ Template.App_projects.events({
     },
 
     
-    // open project
     'click tbody > tr': function (event) {
         var dataTable = $(event.target).closest('table').DataTable();
         var rowData = dataTable.row(event.currentTarget).data();
         if (!rowData) return; // if a placeholder row is clicked
 
-        FlowRouter.go('App.project.code', {code: rowData.code});
+        // open project
+        // FlowRouter.go('App.project.code', {code: rowData.code});
     }
     
 
