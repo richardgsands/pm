@@ -226,9 +226,11 @@ Projects.helpers({
         return projectManager && projectManager.initials;
     },
 
-    getActions() {
+    getActions(filters) {
+        if (!filters) filters = {};
+
         // return ProjectActions.find({ projectId: this._id }, { sort: { _order: 1 } });    // for using sortable
-        return ProjectActions.find({ projectId: this._id }, { sort: { comGpletionDate: 1 } });       // sort by completion date, then milestone status
+        return ProjectActions.find(_.extend(filters, { projectId: this._id }), { sort: { comGpletionDate: 1 } });       // sort by completion date, then milestone status
     },
 
     getParent() {
