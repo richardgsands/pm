@@ -53,7 +53,6 @@ http@1.2.12
 ian:accounts-ui-bootstrap-3@1.2.89
 id-map@1.0.9
 insecure@1.0.7
-jkuester:autoform-hint@0.3.0
 johanbrook:publication-collector@1.0.10
 jquery@1.11.10
 kadira:blaze-layout@2.3.0

@@ -51,4 +51,4 @@ rubaxa:sortable
 check                       # NB: required for rubaxa:sortable
 viloma:user-feedback
 session
-jkuester:autoform-hint
+# jkuester:autoform-hint
